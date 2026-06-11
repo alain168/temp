@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>京阪奈建議行程表-20260608版修正</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --link-color: #2980b9;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* 側邊導航欄 */
+        .sidebar {
+            width: 220px;
+            background-color: var(--primary-color);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            padding-top: 20px;
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #ecf0f1;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #34495e;
+            border-left-color: var(--accent-color);
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            margin-left: 220px;
+            padding: 40px;
+            max-width: 900px;
+            width: calc(100% - 220px);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        /* 地圖連結樣式 */
+        .main-content a {
+            color: var(--link-color);
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .main-content a:hover {
+            color: var(--accent-color);
+        }
+
+        .flight-info, .prep-info {
+            background-color: #e8f4f8;
+            border-left: 5px solid #3498db;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .day-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 25px;
+            margin-bottom: 35px;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .day-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .sub-section {
+            margin-top: 15px;
+        }
+
+        .sub-section h3 {
+            color: #16a085;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .badge-blue {
+            background-color: #2980b9;
+        }
+
+        .hotel-info {
+            background-color: #fdf6e2;
+            border: 1px solid #f39c12;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        .hotel-info a {
+            color: #d35400 !important;
+        }
+
+        /* 響應式網頁設計 (RWD) */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding-bottom: 10px;
+            }
+            .sidebar a {
+                display: inline-block;
+                padding: 8px 12px;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+        }
+		
+		 /* 新增：自定義地圖嵌入區域的樣式 */
+        .map-container {
+            width: 100%;
+            height: 400px; /* 調整地圖高度 */
+            background-color: #eee; /* 在地圖載入前顯示的背景 */
+            border-radius: 8px;
+            overflow: auto; /* 允許滾動 */
+            -webkit-overflow-scrolling: touch; /* iOS Safari 平滑滾動支援 */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .map-container iframe {
+            width: 1px; /* 破解 iOS Safari iframe 寬度撐破容器的問題 */
+            min-width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 側邊導航欄 -->
+    <div class="sidebar">
+        <h2>行程快速跳轉</h2>
+        <a href="#prep">預購與航班</a>
+        <a href="#day1">7/4 (六) 關西機場→奈良</a>
+        <a href="#day2">7/5 (日) 宇治/伏見稻荷→京都</a>
+        <a href="#day3">7/6 (一) 清水寺/祇園/購物</a>
+        <a href="#day4">7/7 (二) 京都→梅田購物</a>
+        <a href="#day5">7/8 (三) 日本環球影城</a>
+        <a href="#day6">7/9 (四) 海遊館/天保山/大阪城</a>
+        <a href="#day7">7/10 (五) 難波/心齋橋/道頓堀</a>
+        <a href="#day8">7/11 (六) 木津市場/Outlet→返台</a>
+    </div>
+
+    <!-- 主要內容區 -->
+    <div class="main-content">
+        <h1>京阪奈建議行程表 <small style="font-size:0.5em; color:#666;">20260608版修正</small></h1>
+        <p style="color: #7f8c8d; font-size: 0.9rem;">💡 提示：點擊行程中的藍色景點或店家名稱，可直接開啟 Google 地圖查看位置！</p>
+        
+		<!-- ========================================== -->
+        <!-- 核心：嵌入您的自定義 Google 地圖 -->
+        <!-- ========================================== -->
+        <div class="map-container">
+            <!-- 此處需要您填入在 Google 我的地圖中取得的「嵌入地圖」iFrame 程式碼 -->
+            <iframe src="https://www.google.com/maps/d/embed?mid=1No3OHomhmgRk480kPIg5FBLd3WifeZ4&ehbc=2E312F&noprof=1" width="100%" height="100%" scrolling="no" style="border:0;" allowfullscreen></iframe>
+            <!-- 
+               💡 教學：
+               1. 前往 Google「我的地圖」(https://www.google.com/maps/d/)。
+               2. 建立新地圖，手動加入行程中的重要景點。
+               3. 點擊「分享」並設為公開，然後點擊地圖選單中的「嵌入我的網站」。
+               4. 將產生的 <iframe> 代碼中的 src 網址（例如 https://www.google.com/maps/d/u/0/embed?mid=xxx）複製，並貼到上面的 iFrame src 屬性中，並在網址後方加上 "&output=embed"。
+            -->
+        </div>
+		
+        <!-- 航班與預購事項 -->
+        <div id="prep" class="flight-info">
+            <h3>✈️ 航班資訊</h3>
+            <strong>去程：7月4日 (週六)</strong> 泰國獅航 (SL 396) | Boeing 737<br>
+            08:55 <a href="https://www.google.com/maps/search/?api=1&query=桃園國際機場" target="_blank">臺灣桃園國際機場 (TPE)</a> → 12:30 <a href="https://www.google.com/maps/search/?api=1&query=關西國際機場第二航廈" target="_blank">關西國際機場第二航廈 (KIX)</a><br><br>
+            <strong>回程：7月11日 (週六)</strong> 台灣虎航 (IT 213) | Airbus A320 <span class="badge">常誤點30分以上</span><br>
+            20:00 關西國際機場第二航廈 (KIX) → 21:50 臺灣桃園國際機場 (TPE)
+        </div>
+
+        <div class="prep-info">
+            <h3>📌 行前預購與檢查清單</h3>
+            <ul>
+                <li>[x] USJ 門票</li>
+                <li>[x] JR 關西地區鐵路周遊券 4 Days Pass</li>
+                <li>[x] 大阪周遊卡 2 Days Pass</li>
+                <li>[ ] eSIM 購買</li>
+                <li>[x] 海遊館門票（請於 30 日前預購）</li>
+                <li>[ ] 投保旅平險</li>
+                <li>[ ] 準備簡易雨衣（環球影城玩水用）</li>
+				<li>[ ] visit japan web</li>
+            </ul>
+        </div>
+
+        <!-- 每日行程 -->
+        <!-- Day 1 -->
+        <div id="day1" class="day-card">
+            <h2>Day 1：7/4 (星期六) | 關西機場 ➔ 奈良</h2>
+            <p><strong>交通票券：</strong><span class="badge badge-blue">關西地區鐵路周遊券 4day-1</span>、SUICA 儲值</p>
+            <div class="sub-section">
+                <h3>🕒 機場抵達與出關說明</h3>
+                <ul>
+                    <li>約日本時間 14:00 出關。</li>
+                    <li>自第二航廈搭乘接駁巴士前往第一航廈。</li>
+                    <li>一航廈 JR 窗口兌換 JR PASS 實體票，並劃位 HARUKA 指定席。</li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>🚇 交通路線</h3>
+                <ul>
+                    <li><strong>方案 A：</strong>搭乘 JR 關空特急 HARUKA 至<a href="https://www.google.com/maps/search/?api=1&query=天王寺站" target="_blank">【天王寺站】</a> ➔ 轉乘 JR 大和路線至<a href="https://www.google.com/maps/search/?api=1&query=JR奈良站" target="_blank">【JR 奈良站】</a>。</li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>📍 奈良推薦景點</h3>
+                <ul>
+                    <li><a href="https://www.google.com/maps/search/?api=1&query=奈良公園" target="_blank">奈良公園</a>（JR奈良站東口2號站台搭乘公車至東大寺站下車）</li>
+                    <li><a href="https://www.google.com/maps/search/?api=1&query=東大寺" target="_blank">東大寺</a>（門票 ¥800）</li>
+                    <li><a href="https://www.google.com/maps/search/?api=1&query=東向商店街" target="_blank">東向商店街</a>、<a href="https://www.google.com/maps/search/?api=1&query=三条通" target="_blank">三条通</a></li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>🍽️ 奈良美食</h3>
+                <ul>
+                    <li><a href="https://www.google.com/maps/search/?api=1&query=釜飯志津香" target="_blank">釜飯 志津香</a>（公園店 / 大宮店-三条通）</li>
+                    <li><a href="https://www.google.com/maps/search/?api=1&query=中谷堂" target="_blank">中谷堂 日式草仔粿</a></li>
+                    <li>近鐵奈良站周邊：<a href="https://www.google.com/maps/search/?api=1&query=大佛布丁" target="_blank">大佛布丁</a>、<a href="https://www.google.com/maps/search/?api=1&query=柿葉壽司" target="_blank">柿葉壽司</a>、<a href="https://www.google.com/maps/search/?api=1&query=箱夢飯糰" target="_blank">箱夢飯糰</a></li>
+                </ul>
+            </div>
+            <div class="hotel-info">🏨 住宿：<a href="https://www.google.com/maps/search/?api=1&query=大和魯內奈良天然溫泉酒店" target="_blank">大和魯內奈良天然溫泉酒店</a></div>
+        </div>
+
+        <!-- Day 2 -->
+        <div id="day2" class="day-card">
+            <h2>Day 2：7/5 (星期日) | 奈良 ➔ 宇治 / 伏見稻荷 ➔ 京都</h2>
+            <p><strong>交通票券：</strong><span class="badge badge-blue">關西地區鐵路周遊券 4day-2</span></p>
+            <div class="sub-section">
+                <h3>📍 觀光景點</h3>
+                <ul>
+                    <li>宇治：<a href="https://www.google.com/maps/search/?api=1&query=平等院" target="_blank">平等院</a>（門票 ¥700）、宇治川周邊</li>
+                    <li><a href="https://www.google.com/maps/search/?api=1&query=伏見稻荷大社" target="_blank">伏見稻荷大社</a>：千本鳥居</li>
+                    <li>嵐山（視時間而定）：<a href="https://www.google.com/maps/search/?api=1&query=嵐山竹林小徑" target="_blank">竹林小徑</a>、<a href="https://www.google.com/maps/search/?api=1&query=渡月橋" target="_blank">渡月橋</a></li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>🍵 宇治抹茶推薦</h3>
+                <p><a href="https://www.google.com/maps/search/?api=1&query=中村藤吉本店" target="_blank">中村藤吉本店</a>、<a href="https://www.google.com/maps/search/?api=1&query=伊藤久右衛門本店" target="_blank">伊藤久右衛門</a>、<a href="https://www.google.com/maps/search/?api=1&query=辻利祇園本店" target="_blank">辻利</a></p>
+            </div>
+            <div class="sub-section">
+                <h3>🛍️ 京都購物（高島屋、大丸、藤井大丸）</h3>
+                <ul>
+                    <li><a href="https://www.google.com/maps/search/?api=1&query=京都高島屋" target="_blank">京都高島屋 S.C.</a>、<a href="https://www.google.com/maps/search/?api=1&query=大丸京都店" target="_blank">大丸京都店</a>、<a href="https://www.google.com/maps/search/?api=1&query=藤井大丸" target="_blank">藤井大丸</a></li>
+                    <li>必買：小倉山莊、茶之菓、阿闍梨餅、虎屋羊羹。</li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>🍽️ 晚餐與美食推薦</h3>
+                <ul>
+                    <li><a href="https://www.google.com/maps/search/?api=1&query=錦市場" target="_blank">錦市場</a>、<a href="https://www.google.com/maps/search/?api=1&query=新京極通" target="_blank">新京極通</a>、藥妝採購（新京極藥品）</li>
+                    <li>燒肉：<a href="https://www.google.com/maps/search/?api=1&query=燒肉弘商店烏丸錦" target="_blank">燒肉弘商店 烏丸錦</a>、<a href="https://www.google.com/maps/search/?api=1&query=京都燒肉enen" target="_blank">京都焼肉 enen</a></li>
+                    <li>壽喜燒：<a href="https://www.google.com/maps/search/?api=1&query=三嶋亭高島屋店" target="_blank">三嶋亭 高島屋店</a>、<a href="https://www.google.com/maps/search/?api=1&query=肉のひろ重" target="_blank">すき焼き 肉のひろ重</a></li>
+                </ul>
+            </div>
+            <div class="hotel-info">🏨 住宿：<a href="https://www.google.com/maps/search/?api=1&query=相鐵FRESA+INN+京都四條烏丸" target="_blank">相鐵FRESA INN - 京都四條烏丸</a></div>
+        </div>
+
+        <!-- Day 3 -->
+        <div id="day3" class="day-card">
+            <h2>Day 3：7/6 (星期一) | 京都經典一日遊</h2>
+            <div class="sub-section">
+                <h3>📍 散步路線</h3>
+                <p><a href="https://www.google.com/maps/search/?api=1&query=清水寺" target="_blank">清水寺</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=三年坂" target="_blank">三年坂</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=二年坂" target="_blank">二年坂</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=祇園白川" target="_blank">祇園白川</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=花見小路" target="_blank">花見小路</a></p>
+            </div>
+            <div class="sub-section">
+                <h3>🛍️ 百貨焦點推薦</h3>
+                <ul>
+                    <li><strong>京都高島屋 S.C.：</strong>7F 有 <a href="https://www.google.com/maps/search/?api=1&query=Nintendo+KYOTO" target="_blank">Nintendo KYOTO</a>、5F 有 <a href="https://www.google.com/maps/search/?api=1&query=Pokemon+Center+Kyoto" target="_blank">Pokemon Center</a>。</li>
+                    <li><strong>大丸京都店 / 藤井大丸：</strong>設有咖啡甜點 <a href="https://www.google.com/maps/search/?api=1&query=HARBS大丸京都店" target="_blank">HARBS</a>、復古風格 <a href="https://www.google.com/maps/search/?api=1&query=喫茶Madrague大丸京都店" target="_blank">喫茶 Madrague</a>。</li>
+                </ul>
+            </div>
+            <div class="hotel-info">🏨 住宿：<a href="https://www.google.com/maps/search/?api=1&query=相鐵FRESA+INN+京都四條烏丸" target="_blank">相鐵FRESA INN - 京都四條烏丸</a></div>
+        </div>
+
+        <!-- Day 4 -->
+        <div id="day4" class="day-card">
+            <h2>Day 4：7/7 (星期二) | 京都 ➔ 大阪梅田血拼</h2>
+            <p><strong>交通票券：</strong><span class="badge badge-blue">關西地區鐵路周遊券 4day-4</span></p>
+            <div class="sub-section">
+                <h3>🚇 天神橋筋七夕祭行程</h3>
+                <ul>
+                    <li>由 JR 大阪站搭環狀線至【JR 天滿站】，逛日本最長 <a href="https://www.google.com/maps/search/?api=1&query=天神橋筋商店街" target="_blank">天神橋筋商店街</a>，參與 <a href="https://www.google.com/maps/search/?api=1&query=大阪天滿宮" target="_blank">大阪天滿宮七夕祭</a>。</li>
+                    <li>必吃小吃：<a href="https://www.google.com/maps/search/?api=1&query=鳴門鯛燒本舖天神橋" target="_blank">鳴門鯛燒本舖</a>、<a href="https://www.google.com/maps/search/?api=1&query=中村屋可樂餅" target="_blank">中村屋可樂餅</a>。</li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>🛍️ 梅田商圈大激戰（地理最順順序）</h3>
+                <p><strong>1️⃣ <a href="https://www.google.com/maps/search/?api=1&query=GRAND+FRONT+OSAKA" target="_blank">GRAND FRONT OSAKA</a></strong> (包含無印良品與北側 <a href="https://www.google.com/maps/search/?api=1&query=GRAND+GREEN+OSAKA" target="_blank">GRAND GREEN OSAKA</a>) ➔ <strong>2️⃣ <a href="https://www.google.com/maps/search/?api=1&query=LUCUA+Osaka" target="_blank">LUCUA / LUCUA 1100</a></strong> ➔ <strong>3️⃣ <a href="https://www.google.com/maps/search/?api=1&query=阪急百貨梅田本店" target="_blank">阪急百貨 梅田本店</a></strong> (必買 Grand Calbee)</p>
+                <ul>
+                    <li><strong><a href="https://www.google.com/maps/search/?api=1&query=LINKS+UMEDA" target="_blank">LINKS UMEDA (YODOBASHI)</a>：</strong>UNIQLO全球旗艦店、6F 石井 SPORTS。</li>
+                    <li><strong><a href="https://www.google.com/maps/search/?api=1&query=阪急三番街" target="_blank">阪急三番街</a>：</strong>南館 1F 有吉伊卡哇 (Chiikawa Land)。</li>
+                    <li><strong><a href="https://www.google.com/maps/search/?api=1&query=大丸百貨梅田本店" target="_blank">大丸百貨 梅田本店</a>：</strong>13F 設有任天堂、寶可夢。</li>
+                </ul>
+            </div>
+            <div class="hotel-info">🏨 住宿：<a href="https://www.google.com/maps/search/?api=1&query=Ocean西九条" target="_blank">Ocean 西九条 (民宿)</a></div>
+        </div>
+
+        <!-- Day 5 -->
+        <div id="day5" class="day-card">
+            <h2>Day 5：7/8 (星期三) | 日本環球影城 (USJ) 一整天</h2>
+            <div class="sub-section">
+                <h3>⚠️ 注意事項</h3>
+                <ul>
+                    <li>暢玩 <a href="https://www.google.com/maps/search/?api=1&query=日本環球影城" target="_blank">日本環球影城 (USJ)</a> 一整天！</li>
+                </ul>
+            </div>
+            <div class="hotel-info">🏨 住宿：<a href="https://www.google.com/maps/search/?api=1&query=環球影城東方飯店" target="_blank">環球影城東方飯店 (Oriental Hotel Universal City)</a></div>
+        </div>
+
+        <!-- Day 6 -->
+        <div id="day6" class="day-card">
+            <h2>Day 6：7/9 (星期四) | 港灣海遊館 ➔ 大阪城歷史之旅</h2>
+            <p><strong>交通票券：</strong><span class="badge badge-blue">大阪周遊卡二日券-1</span></p>
+            <div class="sub-section">
+                <h3>⚓ 上午：港灣天保山區</h3>
+                <ul>
+                    <li>自環球碼頭搭乘船長線前往 <a href="https://www.google.com/maps/search/?api=1&query=天保山港口村" target="_blank">天保山遊樂區</a>。</li>
+                    <li>參觀 <a href="https://www.google.com/maps/search/?api=1&query=大阪海遊館" target="_blank">大阪海遊館</a>，搭乘 <a href="https://www.google.com/maps/search/?api=1&query=天保山大摩天輪" target="_blank">天保山大摩天輪</a> 或 聖瑪麗亞號。</li>
+                    <li>美食推薦：天保山市場內的 <a href="https://www.google.com/maps/search/?api=1&query=北極星蛋包飯天保山店" target="_blank">北極星蛋包飯</a>、<a href="https://www.google.com/maps/search/?api=1&query=牛ノ福天保山" target="_blank">牛ノ福牛肉蓋飯</a>。</li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>🏯 下午：大阪城區</h3>
+                <ul>
+                    <li>周遊卡景點：<a href="https://www.google.com/maps/search/?api=1&query=大阪城天守閣" target="_blank">大阪城天守閣</a>、<a href="https://www.google.com/maps/search/?api=1&query=大阪城御座船" target="_blank">大阪城御座船</a>、<a href="https://www.google.com/maps/search/?api=1&query=大阪歷史博物館" target="_blank">大阪歷史博物館</a>。</li>
+                </ul>
+            </div>
+            <div class="hotel-info">🏨 住宿：<a href="https://www.google.com/maps/search/?api=1&query=HOTEL+MYSTAYS+Otemae" target="_blank">HOTEL MYSTAYS Otemae 大手前飯店</a></div>
+        </div>
+
+        <!-- Day 7 -->
+        <div id="day7" class="day-card">
+            <h2>Day 7：7/10 (星期五) | 難波、心齋橋、道頓堀大縱走</h2>
+            <p><strong>交通票券：</strong><span class="badge badge-blue">大阪周遊卡二日券-2</span></p>
+            <div class="sub-section">
+                <h3>🧳 行李寄存與購物</h3>
+                <ul>
+                    <li>行李寄放：<a href="https://www.google.com/maps/search/?api=1&query=愛電王難波本店" target="_blank">愛電王 (EDION) 難波本店</a> 4 樓。</li>
+                    <li>周邊購物：<a href="https://www.google.com/maps/search/?api=1&query=難波丸井百貨" target="_blank">難波丸井百貨 (0101)</a>（中信卡享9折）。</li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>📍 景點打卡</h3>
+                <ul>
+                    <li>暢遊 <a href="https://www.google.com/maps/search/?api=1&query=心齋橋筋商店街" target="_blank">心齋橋</a>、<a href="https://www.google.com/maps/search/?api=1&query=道頓堀" target="_blank">道頓堀（跑跑人）</a>、<a href="https://www.google.com/maps/search/?api=1&query=美國村" target="_blank">美國村</a>、<a href="https://www.google.com/maps/search/?api=1&query=法善寺橫丁" target="_blank">法善寺橫丁</a>、<a href="https://www.google.com/maps/search/?api=1&query=難波八阪神社" target="_blank">難波八阪神社</a> 與 <a href="https://www.google.com/maps/search/?api=1&query=通天閣" target="_blank">通天閣</a>。</li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>🍽️ 美食地標</h3>
+                <ul>
+                    <li>黑門市場：<a href="https://www.google.com/maps/search/?api=1&query=黑門三平" target="_blank">黑門三平生魚片</a> | 難波：<a href="https://www.google.com/maps/search/?api=1&query=老爺爺起司蛋糕難波本店" target="_blank">老爺爺起司蛋糕</a></li>
+                    <li>大阪燒：<a href="https://www.google.com/maps/search/?api=1&query=千房道頓堀大樓店" target="_blank">千房</a>、<a href="https://www.google.com/maps/search/?api=1&query=美津の大阪燒" target="_blank">美津の</a> | 串炸：<a href="https://www.google.com/maps/search/?api=1&query=元祖串炸達摩道頓堀店" target="_blank">達摩串炸</a></li>
+                </ul>
+            </div>
+            <div class="hotel-info">🏨 住宿：<a href="https://www.google.com/maps/search/?api=1&query=APA+HOTEL+大國町站前" target="_blank">大國町 APA HOTEL</a></div>
+        </div>
+
+        <!-- Day 8 -->
+        <div id="day8" class="day-card">
+            <h2>Day 8：7/11 (星期六) | 木津市場體驗 ➔ 臨空城 Outlet ➔ 返台</h2>
+            <div class="sub-section">
+                <h3>🐟 上午：木津市場朝市</h3>
+                <ul>
+                    <li>早晨必去 <a href="https://www.google.com/maps/search/?api=1&query=木津卸売市場" target="_blank">木津地方批發市場</a>！</li>
+                    <li>排隊名店：攤位98號 <a href="https://www.google.com/maps/search/?api=1&query=キ八海鮮+木津市場" target="_blank">キ八海鮮</a>、攤位136號 <a href="https://www.google.com/maps/search/?api=1&query=魚宗水產+木津市場" target="_blank">魚宗水產</a>、<a href="https://www.google.com/maps/search/?api=1&query=木津魚市食堂" target="_blank">木津魚市食堂</a>、百年鰻魚 <a href="https://www.google.com/maps/search/?api=1&query=川上商店+木津市場" target="_blank">川上商店</a>、水果天堂 <a href="https://www.google.com/maps/search/?api=1&query=ヤマタ小林商店" target="_blank">ヤマタ小林商店</a>。</li>
+                    <li>採購零食：<a href="https://www.google.com/maps/search/?api=1&query=ODA+木津市場店" target="_blank">ODA 超市</a>。</li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>🛍️ 下午：臨空城 Rinku Premium Outlets</h3>
+                <ul>
+                    <li>搭車前往 <a href="https://www.google.com/maps/search/?api=1&query=臨空城站" target="_blank">臨空城站</a>，於車站出口附近的 JLS 寄存行李。</li>
+                    <li>血拼聖地：<a href="https://www.google.com/maps/search/?api=1&query=臨空城Outlet" target="_blank">臨空城 Rinku Premium Outlets</a>（晚餐可吃 Shake Shack，並去 TRIAL 超市補貨）。</li>
+                </ul>
+            </div>
+            <div class="sub-section">
+                <h3>✈️ 返程</h3>
+                <ul>
+                    <li>搭乘接駁車前往 <a href="https://www.google.com/maps/search/?api=1&query=關西國際機場" target="_blank">關西國際機場</a>，並轉至第二航廈搭機返台。</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
