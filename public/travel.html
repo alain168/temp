@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>京阪奈建議行程表-20260608版修正</title>
+    <title>京阪奈建議行程表-20260610版修正</title>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -217,7 +217,7 @@
 
     <!-- 主要內容區 -->
     <div class="main-content">
-        <h1>京阪奈建議行程表 <small style="font-size:0.5em; color:#666;">20260608版修正</small></h1>
+        <h1>京阪奈建議行程表 <small style="font-size:0.5em; color:#666;">20260610版修正</small></h1>
         <p style="color: #7f8c8d; font-size: 0.9rem;">💡 提示：點擊行程中的藍色景點或店家名稱，可直接開啟 Google 地圖查看位置！</p>
         
 		<!-- ========================================== -->
@@ -245,22 +245,163 @@
             20:00 <a href="https://www.google.com/maps/search/?api=1&query=關西國際機場第二航廈" target="_blank">關西國際機場第二航廈 (KIX)</a> → 21:50 <a href="https://www.google.com/maps/search/?api=1&query=桃園國際機場" target="_blank">臺灣桃園國際機場 (TPE)</a>
         </div>
 
-        <div class="prep-info">
+        <div class="prep-info" id="checklist-section">
             <h3>📌 行前預購與檢查清單</h3>
-            <ul>
-                <li>[x] USJ 門票</li>
-                <li>[x] JR 關西地區鐵路周遊券 4 Days Pass</li>
-                <li>[x] 大阪周遊卡 2 Days Pass</li>
-                <li>[x] eSIM 購買</li>
-                <li>[x] 海遊館門票（請於 30 日前預購）</li>
-                <li>[ ] 京都市營地下鐵一日遊通票</li>
-                <li>[ ] 京阪電車京都觀光一日券</li>
-                <li>[ ] 阪急電鐵一日券</li>
-                <li>[ ] 投保旅平險</li>
-                <li>[ ] 準備簡易雨衣（環球影城玩水用）</li>
-                <li>[ ] Visit Japan Web 填寫完成</li>
-            </ul>
+            <p style="font-size:0.85rem; color:#888; margin-bottom: 10px;">✅ 狀態自動儲存於本機瀏覽器，重新整理後仍保留。</p>
+            <ul id="checklist" style="list-style:none; padding-left: 0;"></ul>
+            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button onclick="exportChecklist()" style="padding:6px 14px; background:#3498db; color:white; border:none; border-radius:5px; cursor:pointer; font-size:0.9rem;">📥 匯出 JSON</button>
+                <button onclick="document.getElementById('importFile').click()" style="padding:6px 14px; background:#27ae60; color:white; border:none; border-radius:5px; cursor:pointer; font-size:0.9rem;">📤 匯入 JSON</button>
+                <button onclick="resetChecklist()" style="padding:6px 14px; background:#e74c3c; color:white; border:none; border-radius:5px; cursor:pointer; font-size:0.9rem;">🔄 全部重置</button>
+                <input type="file" id="importFile" accept=".json,.txt" style="display:none" onchange="importChecklist(event)">
+            </div>
         </div>
+
+        <script>
+        // ── 清單資料定義 ──────────────────────────────────
+        const CHECKLIST_KEY = 'travel_checklist_2026';
+        const DEFAULT_ITEMS = [
+            { id: 'usj',       label: 'USJ 門票',                               done: true  },
+            { id: 'jrpass',    label: 'JR 關西地區鐵路周遊券 4 Days Pass',       done: true  },
+            { id: 'osaka_pass',label: '大阪周遊卡 2 Days Pass',                  done: true  },
+            { id: 'esim',      label: 'eSIM 購買',                              done: true  },
+            { id: 'kaiyukan',  label: '海遊館門票（請於 30 日前預購）',           done: true  },
+            { id: 'subway',    label: '京都市營地下鐵一日遊通票',               done: false },
+            { id: 'keihan',    label: '京阪電車京都觀光一日券',                  done: false },
+            { id: 'hankyu',    label: '阪急電鐵一日券',                          done: false },
+            { id: 'insurance', label: '投保旅平險',                              done: false },
+            { id: 'raincoat',  label: '準備簡易雨衣（環球影城玩水用）',          done: false },
+            { id: 'vjw',       label: 'Visit Japan Web 填寫完成',               done: false }
+        ];
+
+        // ── 讀取 / 寫入 ───────────────────────────────────
+        function loadItems() {
+            try {
+                const saved = localStorage.getItem(CHECKLIST_KEY);
+                if (!saved) return DEFAULT_ITEMS.map(i => ({...i}));
+                const savedMap = JSON.parse(saved);
+                // 合併：以 savedMap 的 done 狀態覆蓋預設值，保留新增項目
+                return DEFAULT_ITEMS.map(i => ({
+                    ...i,
+                    done: savedMap.hasOwnProperty(i.id) ? savedMap[i.id] : i.done
+                }));
+            } catch(e) {
+                return DEFAULT_ITEMS.map(i => ({...i}));
+            }
+        }
+
+        function saveItems(items) {
+            const map = {};
+            items.forEach(i => { map[i.id] = i.done; });
+            localStorage.setItem(CHECKLIST_KEY, JSON.stringify(map));
+        }
+
+        // ── 渲染清單 ─────────────────────────────────────
+        function renderChecklist() {
+            const items = loadItems();
+            const ul = document.getElementById('checklist');
+            ul.innerHTML = '';
+            const doneCount = items.filter(i => i.done).length;
+            const pct = Math.round(doneCount / items.length * 100);
+
+            // 進度條
+            const progress = document.getElementById('checklist-progress');
+            if (progress) {
+                progress.style.width = pct + '%';
+                document.getElementById('checklist-pct').textContent = doneCount + ' / ' + items.length + ' (' + pct + '%)';
+            }
+
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.style.cssText = 'padding: 7px 0; border-bottom: 1px solid #f0f0f0; display:flex; align-items:center; gap:10px;';
+
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.id = 'cb_' + item.id;
+                cb.checked = item.done;
+                cb.style.cssText = 'width:18px; height:18px; accent-color:#27ae60; cursor:pointer; flex-shrink:0;';
+                cb.addEventListener('change', () => {
+                    const all = loadItems();
+                    const target = all.find(i => i.id === item.id);
+                    if (target) target.done = cb.checked;
+                    saveItems(all);
+                    renderChecklist();
+                });
+
+                const lbl = document.createElement('label');
+                lbl.htmlFor = 'cb_' + item.id;
+                lbl.textContent = item.label;
+                lbl.style.cssText = 'cursor:pointer; font-size:0.95rem; ' + (item.done ? 'text-decoration:line-through; color:#aaa;' : '');
+
+                li.appendChild(cb);
+                li.appendChild(lbl);
+                ul.appendChild(li);
+            });
+        }
+
+        // ── 匯出 JSON ────────────────────────────────────
+        function exportChecklist() {
+            const items = loadItems();
+            const data = { version: '20260610', updated: new Date().toISOString(), items: items };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'travel_checklist.json';
+            a.click();
+        }
+
+        // ── 匯入 JSON / TXT ───────────────────────────────
+        function importChecklist(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    const map = {};
+                    // 支援兩種格式：{ items: [...] } 或 { id: bool, ... }
+                    if (data.items && Array.isArray(data.items)) {
+                        data.items.forEach(i => { map[i.id] = i.done; });
+                    } else {
+                        Object.assign(map, data);
+                    }
+                    localStorage.setItem(CHECKLIST_KEY, JSON.stringify(map));
+                    renderChecklist();
+                    alert('✅ 匯入成功！');
+                } catch(err) {
+                    alert('❌ 檔案格式錯誤，請使用本頁匯出的 JSON 檔。');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ── 全部重置 ─────────────────────────────────────
+        function resetChecklist() {
+            if (!confirm('確定要將所有項目重置為預設狀態嗎？')) return;
+            localStorage.removeItem(CHECKLIST_KEY);
+            renderChecklist();
+        }
+
+        // ── 初始化 ────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function() {
+            // 插入進度條到 h3 後面
+            const section = document.getElementById('checklist-section');
+            const h3 = section.querySelector('h3');
+            const barWrapper = document.createElement('div');
+            barWrapper.style.cssText = 'background:#eee; border-radius:6px; height:10px; margin:8px 0 4px; overflow:hidden;';
+            const bar = document.createElement('div');
+            bar.id = 'checklist-progress';
+            bar.style.cssText = 'height:100%; background:#27ae60; transition:width 0.3s; width:0%';
+            barWrapper.appendChild(bar);
+            const pctTxt = document.createElement('p');
+            pctTxt.id = 'checklist-pct';
+            pctTxt.style.cssText = 'font-size:0.8rem; color:#666; margin:0 0 8px;';
+            h3.after(pctTxt);
+            h3.after(barWrapper);
+            renderChecklist();
+        });
+        </script>
 
         <!-- 每日行程 -->
         <!-- Day 1 -->
