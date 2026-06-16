@@ -468,6 +468,59 @@
             .day-card { page-break-inside: avoid; }
             a[href]:after { content: none !important; }
         }
+		/* Timeline 時間軸樣式 */
+.timeline {
+    position: relative;
+    padding-left: 30px;
+    margin: 20px 0;
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8px; /* 時間軸的線 */
+    height: 100%;
+    width: 2px;
+    background: #3498db;
+}
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -27px; /* 時間軸上的圓點 */
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #3498db;
+}
+.timeline-time {
+    font-weight: bold;
+    color: #e67e22;
+    margin-bottom: 5px;
+}
+.timeline-content {
+    background: #f9f9f9;
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+/* 打卡 Checkbox 與完成樣式 */
+.check-in-box {
+    margin-top: 5px;
+    transform: scale(1.5);
+    cursor: pointer;
+}
+.check-in-box:checked + label {
+    text-decoration: line-through;
+    color: #bdc3c7;
+}
     </style>
 </head>
 <body>
@@ -499,6 +552,37 @@
 
     <!-- 主要內容區 -->
     <div class="main-content">
+	<!-- 🌤️ 即時天氣區塊 -->
+<div class="weather-section day-card">
+    <h3>🌤️ 關西地區即時天氣</h3>
+    <!-- 大阪天氣 -->
+    <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/34d69135d50/osaka/" data-label_1="大阪" data-label_2="天氣" data-theme="pure">大阪 天氣</a>
+    <!-- 京都天氣 -->
+    <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/35d01135d76/kyoto/" data-label_1="京都" data-label_2="天氣" data-theme="pure">京都 天氣</a>
+    <!-- 奈良天氣 -->
+    <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/34d68135d80/nara/" data-label_1="奈良" data-label_2="天氣" data-theme="pure">奈良 天氣</a>
+    
+    <script>
+    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+    </script>
+</div>
+<div class="budget-card day-card">
+    <h3>💰 預算與花費紀錄 (日幣)</h3>
+    <div style="display: flex; justify-content: space-between; font-size: 1.2rem; margin-bottom: 15px; background: #ecf0f1; padding: 10px; border-radius: 5px;">
+        <div>總預算: ¥<input type="number" id="totalBudget" value="100000" style="width: 80px;" onchange="calculateBudget()"></div>
+        <div>剩餘: <strong id="remainingBudget" style="color: #27ae60;">¥100000</strong></div>
+    </div>
+    
+    <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+        <input type="text" id="expenseItem" placeholder="項目 (例: 買藥妝)" style="flex: 2; padding: 5px;">
+        <input type="number" id="expenseCost" placeholder="金額" style="flex: 1; padding: 5px;">
+        <button onclick="addExpense()" style="background: #3498db; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;">新增</button>
+    </div>
+
+    <ul id="expenseList" style="list-style: none; padding: 0; margin: 0;">
+        <!-- 花費紀錄會產生在這裡 -->
+    </ul>
+</div>
         <h1>京阪奈建議行程表 <small style="font-size:0.5em; color:#666;">20260616版修正</small></h1>
 
         <!-- 出發倒數計時器 -->
@@ -2825,6 +2909,84 @@
             btn.style.background = isOpen ? '#e67e22' : '#27ae60';
         });
     })();
+	
+	// === 行程打卡功能 ===
+    function saveTasks() {
+        const checkboxes = document.querySelectorAll('.check-in-box');
+        const tasks = {};
+        checkboxes.forEach(box => {
+            tasks[box.id] = box.checked;
+        });
+        localStorage.setItem('travelTasks', JSON.stringify(tasks));
+    }
+
+    function loadTasks() {
+        const savedTasks = JSON.parse(localStorage.getItem('travelTasks') || '{}');
+        for (const [id, isChecked] of Object.entries(savedTasks)) {
+            const box = document.getElementById(id);
+            if (box) box.checked = isChecked;
+        }
+    }
+
+    // === 記帳與預算功能 ===
+    let expenses = JSON.parse(localStorage.getItem('travelExpenses') || '[]');
+
+    function updateBudgetUI() {
+        const list = document.getElementById('expenseList');
+        list.innerHTML = '';
+        let totalSpent = 0;
+
+        expenses.forEach((exp, index) => {
+            totalSpent += parseInt(exp.cost);
+            list.innerHTML += `
+                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; padding: 8px 0;">
+                    <span>${exp.item}</span>
+                    <span>¥${exp.cost} <button onclick="deleteExpense(${index})" style="background:none; border:none; color:red; cursor:pointer;">✖</button></span>
+                </li>`;
+        });
+
+        const budgetInput = document.getElementById('totalBudget');
+        const budget = parseInt(budgetInput.value) || 0;
+        const remaining = budget - totalSpent;
+        
+        document.getElementById('remainingBudget').innerText = `¥${remaining}`;
+        // 如果透支，字體變紅色
+        document.getElementById('remainingBudget').style.color = remaining < 0 ? '#e74c3c' : '#27ae60';
+        localStorage.setItem('travelExpenses', JSON.stringify(expenses));
+    }
+
+    function addExpense() {
+        const item = document.getElementById('expenseItem').value;
+        const cost = document.getElementById('expenseCost').value;
+        if (item && cost) {
+            expenses.push({ item, cost });
+            document.getElementById('expenseItem').value = '';
+            document.getElementById('expenseCost').value = '';
+            updateBudgetUI();
+        }
+    }
+
+    function deleteExpense(index) {
+        expenses.splice(index, 1);
+        updateBudgetUI();
+    }
+
+    function calculateBudget() {
+        updateBudgetUI();
+        localStorage.setItem('travelTotalBudget', document.getElementById('totalBudget').value);
+    }
+
+    // === 網頁載入時初始化 ===
+    window.onload = function() {
+        loadTasks(); // 載入打卡進度
+        
+        // 載入預算設定
+        const savedBudget = localStorage.getItem('travelTotalBudget');
+        if (savedBudget) {
+            document.getElementById('totalBudget').value = savedBudget;
+        }
+        updateBudgetUI(); // 載入記帳明細
+    };
     </script>
 </body>
 </html>
