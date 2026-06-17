@@ -521,6 +521,33 @@
     text-decoration: line-through;
     color: #bdc3c7;
 }
+/* ===== 即時天氣卡片 ===== */
+.weather-section { border-top-color: #3498db; }
+.weather-card {
+    flex: 1;
+    min-width: 150px;
+    background: linear-gradient(145deg, #eaf4fd, #d4ecf7);
+    border-radius: 14px;
+    padding: 18px 14px;
+    box-shadow: 0 3px 10px rgba(52,152,219,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+    transition: transform 0.2s;
+}
+.weather-card:hover { transform: translateY(-3px); }
+.weather-loading { color: #999; font-size: 0.9rem; }
+.weather-icon { font-size: 2.8rem; line-height: 1; }
+.weather-city { font-weight: bold; font-size: 1.05rem; margin: 6px 0 2px; }
+.weather-temp { font-size: 2rem; font-weight: 900; color: #e74c3c; line-height: 1; }
+.weather-desc { color: #555; font-size: 0.88rem; margin: 4px 0; }
+.weather-meta { font-size: 0.78rem; color: #888; line-height: 1.7; }
+body.dark-mode .weather-card {
+    background: linear-gradient(145deg, #1a2a38, #1d3347);
+}
+body.dark-mode .weather-desc { color: #aaa; }
+body.dark-mode .weather-meta { color: #777; }
     </style>
 </head>
 <body>
@@ -553,18 +580,22 @@
     <!-- 主要內容區 -->
     <div class="main-content">
 	<!-- 🌤️ 即時天氣區塊 -->
-<div class="weather-section day-card">
-    <h3>🌤️ 關西地區即時天氣</h3>
-    <!-- 大阪天氣 -->
-    <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/34d69135d50/osaka/" data-label_1="大阪" data-label_2="天氣" data-theme="pure">大阪 天氣</a>
-    <!-- 京都天氣 -->
-    <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/35d01135d76/kyoto/" data-label_1="京都" data-label_2="天氣" data-theme="pure">京都 天氣</a>
-    <!-- 奈良天氣 -->
-    <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/34d68135d80/nara/" data-label_1="奈良" data-label_2="天氣" data-theme="pure">奈良 天氣</a>
-    
-    <script>
-    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-    </script>
+<div class="weather-section day-card" id="weatherSection">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+        <h3 style="margin:0;">🌤️ 關西地區即時天氣</h3>
+        <button onclick="loadAllWeather()" id="weatherRefreshBtn"
+            style="background:#3498db;color:#fff;border:none;border-radius:20px;padding:5px 14px;font-size:0.8rem;cursor:pointer;">
+            🔄 重新整理
+        </button>
+    </div>
+    <div id="weatherCards" style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div class="weather-card" id="weather-osaka"><div class="weather-loading">⏳ 載入中...</div></div>
+        <div class="weather-card" id="weather-kyoto"><div class="weather-loading">⏳ 載入中...</div></div>
+        <div class="weather-card" id="weather-nara"><div class="weather-loading">⏳ 載入中...</div></div>
+    </div>
+    <div style="text-align:right; font-size:0.75rem; color:#aaa; margin-top:8px;">
+        資料來源：Open-Meteo &nbsp;|&nbsp; <span id="weatherUpdateTime">更新中...</span>
+    </div>
 </div>
 <div class="budget-card day-card">
     <h3>💰 預算與花費紀錄 (日幣)</h3>
@@ -2986,7 +3017,94 @@
             document.getElementById('totalBudget').value = savedBudget;
         }
         updateBudgetUI(); // 載入記帳明細
+        loadAllWeather(); // 載入即時天氣
     };
+
+    /* ===== 7. 即時天氣（Open-Meteo API，免費無需 Key）===== */
+    const WEATHER_CITIES = [
+        { id: 'osaka', name: '大阪', lat: 34.6937, lon: 135.5023 },
+        { id: 'kyoto', name: '京都', lat: 35.0116, lon: 135.7681 },
+        { id: 'nara',  name: '奈良', lat: 34.6851, lon: 135.8048 }
+    ];
+
+    const WMO_MAP = {
+        0:  { desc: '晴天',     icon: '☀️' },
+        1:  { desc: '大致晴',   icon: '🌤️' },
+        2:  { desc: '局部多雲', icon: '⛅' },
+        3:  { desc: '陰天',     icon: '☁️' },
+        45: { desc: '起霧',     icon: '🌫️' },
+        48: { desc: '霧凇',     icon: '🌫️' },
+        51: { desc: '輕毛毛雨', icon: '🌦️' },
+        53: { desc: '毛毛雨',   icon: '🌦️' },
+        55: { desc: '大毛毛雨', icon: '🌧️' },
+        61: { desc: '小雨',     icon: '🌧️' },
+        63: { desc: '中雨',     icon: '🌧️' },
+        65: { desc: '大雨',     icon: '🌧️' },
+        71: { desc: '小雪',     icon: '🌨️' },
+        73: { desc: '中雪',     icon: '❄️' },
+        75: { desc: '大雪',     icon: '❄️' },
+        77: { desc: '雪粒',     icon: '🌨️' },
+        80: { desc: '陣雨',     icon: '🌦️' },
+        81: { desc: '中陣雨',   icon: '🌧️' },
+        82: { desc: '大陣雨',   icon: '⛈️' },
+        85: { desc: '陣雪',     icon: '🌨️' },
+        86: { desc: '大陣雪',   icon: '❄️' },
+        95: { desc: '雷陣雨',   icon: '⛈️' },
+        96: { desc: '雷雨夾雹', icon: '⛈️' },
+        99: { desc: '強雷雨夾雹', icon: '⛈️' }
+    };
+
+    async function fetchCityWeather(city) {
+        const url = `https://api.open-meteo.com/v1/forecast` +
+            `?latitude=${city.lat}&longitude=${city.lon}` +
+            `&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m` +
+            `&wind_speed_unit=kmh&timezone=Asia%2FTokyo`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return (await res.json()).current;
+    }
+
+    async function loadAllWeather() {
+        const btn = document.getElementById('weatherRefreshBtn');
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ 更新中...'; }
+
+        await Promise.all(WEATHER_CITIES.map(async (city) => {
+            const el = document.getElementById('weather-' + city.id);
+            if (!el) return;
+            try {
+                const c = await fetchCityWeather(city);
+                const wmo = WMO_MAP[c.weather_code] || { desc: '未知天氣', icon: '❓' };
+                el.innerHTML =
+                    `<div style="text-align:center;">` +
+                    `<div class="weather-icon">${wmo.icon}</div>` +
+                    `<div class="weather-city">${city.name}</div>` +
+                    `<div class="weather-temp">${Math.round(c.temperature_2m)}°C</div>` +
+                    `<div class="weather-desc">${wmo.desc}</div>` +
+                    `<div class="weather-meta">` +
+                    `體感 ${Math.round(c.apparent_temperature)}°C<br>` +
+                    `💧 濕度 ${c.relative_humidity_2m}%<br>` +
+                    `💨 風速 ${Math.round(c.wind_speed_10m)} km/h` +
+                    `</div></div>`;
+            } catch (err) {
+                el.innerHTML =
+                    `<div style="text-align:center;color:#e74c3c;">` +
+                    `⚠️<br>${city.name}<br><span style="font-size:0.8rem;color:#aaa;">無法取得天氣<br>請稍後再試</span></div>`;
+            }
+        }));
+
+        const now = new Date();
+        const timeStr = now.toLocaleString('zh-TW', {
+            month:'2-digit', day:'2-digit',
+            hour:'2-digit', minute:'2-digit', hour12: false
+        });
+        const el = document.getElementById('weatherUpdateTime');
+        if (el) el.textContent = '上次更新：' + timeStr;
+
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 重新整理'; }
+    }
+
+    // 每 30 分鐘自動靜默刷新
+    setInterval(loadAllWeather, 30 * 60 * 1000);
     </script>
 </body>
 </html>
