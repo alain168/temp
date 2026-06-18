@@ -326,6 +326,18 @@
 
         /* ===== 智慧手機螢幕 RWD 重點優化 (防窄屏破版) ===== */
         @media (max-width: 768px) {
+            /* ===== iOS Safari 錨點定位修正 ===== */
+            /* scroll-padding-top: 讓瀏覽器原生錨點捲動時，自動在頂部留出 sticky 導航列的空間 */
+            html {
+                scroll-padding-top: 60px;
+            }
+            /* scroll-margin-top: 作為各瀏覽器的回退（fallback），確保每個區塊錨點不被 sticky 列遮住 */
+            #prep, #flight-items, #day1, #day2, #day3, #day4,
+            #day5, #day6, #day7, #day8,
+            #expert-tips, #japanese-tips, #emergency {
+                scroll-margin-top: 60px;
+            }
+
             body { flex-direction: column; }
             
             /* 導航欄變為手機版置頂置中 */
@@ -2743,12 +2755,59 @@
         const nav = document.getElementById('navLinks');
         nav.classList.toggle('open');
     }
-    // 點選連結後自動收起選單（行動版）
+
+    /* ===== 側邊選單點選後精確捲動定位（修正 iOS Safari sticky 導航列偏移）===== */
+    /*
+     * 問題根因：
+     *  1. 手機版 .sidebar 為 position:sticky，佔用畫面頂部約 56px 空間。
+     *  2. 瀏覽器原生錨點捲動會把目標 element 定位到 viewport top=0，
+     *     結果標題被 sticky 導航列遮住。
+     *  3. 選單展開時點選連結，0.3s 動畫尚未結束就已捲動，
+     *     導致計算偏移時 sidebar 高度不正確。
+     *
+     * 修正策略：
+     *  1. e.preventDefault() 阻止瀏覽器原生錨點捲動。
+     *  2. 先收起選單，等待 CSS transition (300ms) + 緩衝 (50ms) 後再捲動。
+     *  3. 動態讀取 sidebar 高度，確保任何螢幕/字體縮放下都正確。
+     *  4. iOS Safari 相容：使用 window.pageYOffset 替代 scrollY（更廣泛支援）。
+     */
     document.querySelectorAll('#navLinks a').forEach(function(link) {
-        link.addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
+        link.addEventListener('click', function(e) {
+            var href = this.getAttribute('href');
+            if (!href || href.charAt(0) !== '#') return; // 非錨點連結，不攔截
+
+            e.preventDefault(); // 阻止原生錨點捲動（修正核心）
+
+            var targetId = href.slice(1);
+            var target = document.getElementById(targetId);
+
+            var isMobile = window.innerWidth <= 768;
+
+            // Step 1: 收起選單
+            if (isMobile) {
                 document.getElementById('navLinks').classList.remove('open');
             }
+
+            if (!target) return;
+
+            // Step 2: 等選單動畫結束後再捲動（桌機版不需等待）
+            var scrollDelay = isMobile ? 350 : 0;
+
+            setTimeout(function() {
+                var sidebarEl = document.getElementById('sidebar');
+                // 動態讀取 sticky 導航列高度（加 8px buffer 留呼吸空間）
+                var navOffset = isMobile ? (sidebarEl.offsetHeight + 8) : 0;
+
+                // 計算目標絕對位置：getBoundingClientRect 相對當前 viewport + 當前捲動位置
+                var targetRect = target.getBoundingClientRect();
+                var currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+                var targetY = targetRect.top + currentScrollY - navOffset;
+
+                window.scrollTo({
+                    top: Math.max(0, targetY),
+                    behavior: 'smooth'
+                });
+            }, scrollDelay);
         });
     });
 
