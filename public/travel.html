@@ -473,7 +473,16 @@
 
     <!-- 主要內容區 -->
     <div class="main-content">
-			 
+	 <h1>京阪奈建議行程表 <small style="font-size:0.5em; color:#666;">20260618版修正</small></h1>
+
+        <!-- 出發倒數計時器 -->
+        <div class="countdown-bar" id="countdownBar">
+            <div class="countdown-left">
+                <div class="days-num" id="countdownNum">—</div>
+                <div class="days-label" id="countdownLabel">計算中...</div>
+            </div>
+            <div class="trip-dates">🗓️ 7/4 (六) 出發 → 7/11 (六) 返台<br>✈️ SL396 → KIX → TPE IT213</div>
+        </div>		 
  <div id="todayDashboard" class="day-card dashboard-card">
     <h3>📅 今日行程</h3>
 
@@ -532,17 +541,7 @@
         <!-- 花費紀錄會產生在這裡 -->
     </ul>
 </div>
-        <h1>京阪奈建議行程表 <small style="font-size:0.5em; color:#666;">20260618版修正</small></h1>
-
-        <!-- 出發倒數計時器 -->
-        <div class="countdown-bar" id="countdownBar">
-            <div class="countdown-left">
-                <div class="days-num" id="countdownNum">—</div>
-                <div class="days-label" id="countdownLabel">計算中...</div>
-            </div>
-            <div class="trip-dates">🗓️ 7/4 (六) 出發 → 7/11 (六) 返台<br>✈️ SL396 → KIX → TPE IT213</div>
-        </div>
-
+       
         <p style="color: #7f8c8d; font-size: 0.9rem;">💡 提示：點擊行程中的藍色景點或店家名稱，可直接開啟 Google 地圖查看位置！</p>
         
 		<!-- ========================================== -->
@@ -595,12 +594,12 @@
             { id: 'osaka_pass',label: '大阪周遊卡 2 Days Pass',                  done: true  },
             { id: 'esim',      label: 'eSIM 購買',                              done: true  },
             { id: 'kaiyukan',  label: '海遊館門票（請於 30 日前預購）',           done: true  },
+			{ id: 'vjw',       label: 'Visit Japan Web 填寫完成',               done: true },
             { id: 'subway',    label: '京都市營地下鐵一日遊通票',               done: false },
             { id: 'keihan',    label: '京阪電車京都觀光一日券',                  done: false },
             { id: 'hankyu',    label: '阪急電鐵一日券',                          done: false },
             { id: 'insurance', label: '投保旅平險',                              done: false },
-            { id: 'raincoat',  label: '準備簡易雨衣（環球影城玩水用）',          done: false },
-            { id: 'vjw',       label: 'Visit Japan Web 填寫完成',               done: false }
+            { id: 'raincoat',  label: '準備簡易雨衣（環球影城玩水用）',          done: false }
         ];
 
         // ── 讀取 / 寫入 ───────────────────────────────────
