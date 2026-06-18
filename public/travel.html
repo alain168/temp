@@ -413,6 +413,33 @@
         body.dark-mode .weather-city { color: #fff; }
         body.dark-mode .weather-desc { color: #aaa; }
         body.dark-mode .weather-meta { color: #777; }
+		
+		.dashboard-card{
+    border-top:5px solid #27ae60;
+}
+
+.dashboard-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:15px;
+}
+
+.action-btn{
+    flex:1;
+    min-width:120px;
+    text-align:center;
+    padding:10px;
+    border-radius:8px;
+    text-decoration:none;
+    background:#27ae60;
+    color:white;
+    font-weight:bold;
+}
+
+.action-btn:hover{
+    opacity:.9;
+}
     </style>
 </head>
 <body>
@@ -427,7 +454,8 @@
             </button>
         </div>
         <div class="nav-links-wrapper" id="navLinks">
-        <a href="#prep" data-section="prep">預購與航班</a>
+        <a href="#prep" data-section="prep">✈️ 預購與航班</a>
+		<a href="#emergency" data-section="emergency" style="color: #e74c3c; font-weight: bold; border-top: 1px solid #34495e; padding-top: 15px; margin-top: 10px;">🚨 緊急聯絡資訊</a>
         <a href="#flight-items" data-section="flight-items">🧳 行李攜帶須知</a>
         <a href="#day1" data-section="day1">7/4 (六) 關西機場→奈良</a>
         <a href="#day2" data-section="day2">7/5 (日) 宇治/伏見稻荷→京都</a>
@@ -439,12 +467,35 @@
         <a href="#day8" data-section="day8">7/11 (六) 木津市場/Outlet→返台</a>
         <a href="#expert-tips" data-section="expert-tips" style="color: #f39c12; font-weight: bold; margin-top: 10px; border-top: 1px solid #34495e; padding-top: 15px;">⭐ 達人補充攻略</a>
         <a href="#japanese-tips" data-section="japanese-tips" style="color: #f39c12; font-weight: bold;">⭐ 日語對話小幫手</a>
-		<a href="#emergency" data-section="emergency" style="color: #e74c3c; font-weight: bold; border-top: 1px solid #34495e; padding-top: 15px; margin-top: 10px;">🚨 緊急聯絡資訊</a>
+		
         </div>
     </div>
 
     <!-- 主要內容區 -->
     <div class="main-content">
+			 
+ <div id="todayDashboard" class="day-card dashboard-card">
+    <h3>📅 今日行程</h3>
+
+    <div id="todayPlanContent"></div>
+
+    <div class="dashboard-actions">
+        <a id="gotoDayBtn" class="action-btn">
+            📖 查看完整行程
+        </a>
+
+        <a id="weatherBtn" class="action-btn">
+            ☀️ 今日天氣
+        </a>
+
+        <a id="mapBtn"
+           class="action-btn"
+           target="_blank">
+            🗺️ Google Maps
+        </a>
+    </div>
+</div>
+	
   <!-- 🌤️ 即時天氣區塊 (手機RWD優化版) -->
         <div class="weather-section day-card" id="weatherSection">
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
@@ -463,6 +514,7 @@
                 資料來源：Open-Meteo &nbsp;|&nbsp; <span id="weatherUpdateTime">更新中...</span>
             </div>
         </div>
+ 
 <div class="budget-card day-card">
     <h3>💰 預算與花費紀錄 (日幣)</h3>
     <div style="display: flex; justify-content: space-between; font-size: 1.2rem; margin-bottom: 15px; background: #ecf0f1; padding: 10px; border-radius: 5px;">
@@ -662,6 +714,7 @@
 
         // ── 初始化 ────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function() {
+		    initTodayPlan();
             // 插入進度條到 h3 後面
             const section = document.getElementById('checklist-section');
             const h3 = section.querySelector('h3');
@@ -678,6 +731,180 @@
             h3.after(barWrapper);
             renderChecklist();
         });
+		
+		function initTodayPlan() {
+
+   const plans = {
+    1:{
+        dayId:"day1",
+        title:"Day 1 奈良",
+        hotel:"大和魯內奈良天然溫泉酒店",
+        ticket:"JR PASS Day 1",
+        mission:"奈良公園、東大寺、商店街",
+        budget:8000,
+        map:"https://maps.google.com/?q=Nara+Park"
+    },
+
+    2:{
+        dayId:"day2",
+        title:"Day 2 京都",
+        hotel:"相鐵FRESA京都",
+        ticket:"JR PASS Day 2",
+        mission:"宇治、伏見稻荷",
+        budget:10000,
+        map:"https://maps.google.com/?q=Fushimi+Inari"
+    },
+
+    3:{
+        dayId:"day3",
+        title:"Day 3 京都",
+        hotel:"相鐵FRESA京都",
+        ticket:"JR PASS Day 3",
+        mission:"清水寺、祇園、河原町",
+        budget:12000,
+        map:"https://maps.google.com/?q=Kiyomizu-dera"
+    },
+
+    4:{
+        dayId:"day4",
+        title:"Day 4 梅田",
+        hotel:"APA難波大國町",
+        ticket:"JR PASS Day 4",
+        mission:"梅田百貨購物",
+        budget:15000,
+        map:"https://maps.google.com/?q=Umeda"
+    },
+
+    5:{
+        dayId:"day5",
+        title:"Day 5 USJ",
+        hotel:"APA難波大國町",
+        ticket:"USJ門票",
+        mission:"環球影城",
+        budget:15000,
+        map:"https://maps.google.com/?q=Universal+Studios+Japan"
+    },
+
+    6:{
+        dayId:"day6",
+        title:"Day 6 港灣區",
+        hotel:"APA難波大國町",
+        ticket:"大阪周遊卡",
+        mission:"海遊館、大阪城",
+        budget:8000,
+        map:"https://maps.google.com/?q=Kaiyukan"
+    },
+
+    7:{
+        dayId:"day7",
+        title:"Day 7 難波",
+        hotel:"APA難波大國町",
+        ticket:"大阪周遊卡",
+        mission:"心齋橋、道頓堀",
+        budget:10000,
+        map:"https://maps.google.com/?q=Dotonbori"
+    },
+
+    8:{
+        dayId:"day8",
+        title:"Day 8 回台",
+        hotel:"退房",
+        ticket:"南海電鐵",
+        mission:"Outlet → 關西機場",
+        budget:20000,
+        map:"https://maps.google.com/?q=Kansai+Airport"
+    }
+};
+
+    const startDate = new Date('2026-07-04');
+    const today = new Date('2026-07-07');
+
+    const diff =
+        Math.floor(
+            (today - startDate)
+            / (1000 * 60 * 60 * 24)
+        ) + 1;
+
+    const container =
+        document.getElementById('todayPlanContent');
+
+    if (!container) return;
+
+    if (diff < 1) {
+
+        container.innerHTML = `
+            <div style="font-size:1.2rem;font-weight:bold;">
+                ✈️ 尚未出發
+            </div>
+            <div>
+                倒數中，準備前往關西！
+            </div>
+        `;
+
+        return;
+    }
+
+    if (diff > 8) {
+
+        container.innerHTML = `
+            <div style="font-size:1.2rem;font-weight:bold;">
+                🎉 旅程已結束
+            </div>
+            <div>
+                歡迎回台灣
+            </div>
+        `;
+
+        return;
+    }
+
+    const p = plans[diff];
+
+    container.innerHTML = `
+    <div class="today-title">
+        ${p.title}
+    </div>
+
+    <div class="today-grid">
+
+        <div>🏨 住宿</div>
+        <div>${p.hotel}</div>
+
+        <div>🎫 票券</div>
+        <div>${p.ticket}</div>
+
+        <div>🎯 任務</div>
+        <div>${p.mission}</div>
+
+        <div>💰 預算</div>
+        <div>¥${p.budget.toLocaleString()}</div>
+
+        <div>剩餘旅程：${8 - diff} 天</div>
+		<div>總預算：¥${localStorage.getItem('travelTotalBudget')}</div>
+        <div>累計支出：¥${localStorage.getItem('traveltotalSpent')}</div>
+        <div>剩餘預算：¥${localStorage.getItem('travelTotalBudget') - localStorage.getItem('traveltotalSpent')}</div>
+       </div>
+`;
+document
+    .getElementById("gotoDayBtn")
+    .href = "#" + p.dayId;
+	
+	document
+    .getElementById("weatherBtn")
+    .onclick = function(e){
+        e.preventDefault();
+
+        document
+            .getElementById("weatherSection")
+            .scrollIntoView({
+                behavior:"smooth"
+            });
+    };
+	
+	document
+    .getElementById("mapBtn")
+    .href = p.map;
+}
         </script>
 
         <!-- 每日行程 -->
@@ -2960,6 +3187,7 @@
         // 如果透支，字體變紅色
         document.getElementById('remainingBudget').style.color = remaining < 0 ? '#e74c3c' : '#27ae60';
         localStorage.setItem('travelExpenses', JSON.stringify(expenses));
+		localStorage.setItem('traveltotalSpent', totalSpent);
     }
 
     function addExpense() {
