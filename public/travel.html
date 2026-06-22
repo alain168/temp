@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>京阪奈建議行程表-20260618版修正</title>
+    <title>京阪奈建議行程表-20260622版修正</title>
      <style>
         :root {
             --primary-color: #2c3e50;
@@ -12,6 +12,10 @@
             --card-bg: #ffffff;
             --text-color: #333333;
             --link-color: #2980b9;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
         body {
@@ -77,6 +81,7 @@
             color: #ecf0f1;
             border-radius: 20px;
             padding: 6px 12px;
+            min-height: 44px;
             cursor: pointer;
             font-size: 0.8rem;
             transition: all 0.2s;
@@ -93,6 +98,10 @@
             border: none;
             cursor: pointer;
             padding: 4px 8px;
+            width: 44px;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
             flex-direction: column;
             gap: 4px;
         }
@@ -249,6 +258,7 @@
         .weather-temp { font-size: 1.8rem; font-weight: 900; color: #e74c3c; line-height: 1; }
         .weather-desc { color: #555; font-size: 0.85rem; margin: 4px 0; }
         .weather-meta { font-size: 0.75rem; color: #7f8c8d; line-height: 1.5; }
+        #weatherRefreshBtn { min-height: 44px; }
 
         /* ===== 預算工具手機優化 ===== */
         .budget-inputs {
@@ -264,6 +274,53 @@
         .budget-row input[type="text"] { flex: 2; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
         .budget-row input[type="number"] { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
         .budget-row button { background: #3498db; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; }
+
+        .budget-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .budget-summary input {
+            width: 96px;
+            max-width: 100%;
+            min-height: 44px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .budget-entry-row {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(96px, 1fr) auto;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .budget-entry-row input {
+            min-width: 0;
+            min-height: 44px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .budget-entry-row button {
+            min-height: 44px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
 
         /* ===== 出發倒數橫幅 ===== */
         .countdown-bar {
@@ -298,6 +355,43 @@
         /* ===== 行動版清單與打卡 Checkbox 優化 ===== */
         .check-in-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
         .check-in-box { width: 22px; height: 22px; accent-color: #27ae60; cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .dashboard-header h3 {
+            margin: 0;
+        }
+        .date-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        #planDateSelector {
+            min-height: 44px;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .today-btn {
+            min-height: 44px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg,#2ecc71,#27ae60);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: all .2s;
+            white-space: nowrap;
+        }
 
         /* ===== 返回頂部按鈕 ===== */
         .back-to-top {
@@ -390,6 +484,19 @@
             .weather-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .weather-card { padding: 12px 8px; }
             .weather-temp { font-size: 1.5rem; }
+            .date-controls { width: 100%; }
+            #planDateSelector { flex: 1; min-width: 0; }
+            .budget-summary {
+                align-items: stretch;
+                flex-direction: column;
+                font-size: 1rem;
+            }
+            .budget-entry-row {
+                grid-template-columns: 1fr;
+            }
+            .budget-entry-row button {
+                width: 100%;
+            }
         }
 
         @media (max-width: 360px) {
@@ -409,6 +516,8 @@
         body.dark-mode .flight-info, body.dark-mode .prep-info { background-color: #1d2e3d; border-left-color: #2980b9; color: var(--text-color); }
         body.dark-mode .hotel-info { background-color: #2a2510; border-color: #b7750d; }
         body.dark-mode .timeline-content { background-color: #1e2330; color: var(--text-color); }
+        body.dark-mode input { background-color: #151922; color: var(--text-color); border-color: #3b5068; }
+        body.dark-mode .budget-summary { background-color: #1e2330; }
         body.dark-mode .weather-card { background: linear-gradient(145deg, #1a2a38, #1d3347); }
         body.dark-mode .weather-city { color: #fff; }
         body.dark-mode .weather-desc { color: #aaa; }
@@ -426,10 +535,14 @@
 }
 
 .action-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
     flex:1;
     min-width:120px;
     text-align:center;
     padding:10px;
+    min-height:44px;
     border-radius:8px;
     text-decoration:none;
     background:#27ae60;
@@ -439,6 +552,24 @@
 
 .action-btn:hover{
     opacity:.9;
+}
+
+.main-content .action-btn,
+.main-content .action-btn:visited,
+.main-content .action-btn:hover,
+.main-content .action-btn:focus {
+    color:#fff;
+    text-decoration:none;
+}
+
+.main-content .action-btn:focus-visible,
+.today-btn:focus-visible,
+.budget-entry-row button:focus-visible,
+#weatherRefreshBtn:focus-visible,
+.dark-toggle-btn:focus-visible,
+.hamburger-btn:focus-visible {
+    outline:3px solid rgba(52,152,219,.45);
+    outline-offset:2px;
 }
     </style>
 </head>
@@ -473,7 +604,7 @@
 
     <!-- 主要內容區 -->
     <div class="main-content">
-	 <h1>京阪奈建議行程表 <small style="font-size:0.5em; color:#666;">20260618版修正</small></h1>
+	 <h1>京阪奈建議行程表 <small style="font-size:0.5em; color:#666;">20260622版修正</small></h1>
 
         <!-- 出發倒數計時器 -->
         <div class="countdown-bar" id="countdownBar">
@@ -485,25 +616,11 @@
         </div>		 
  
 <div id="todayDashboard" class="day-card dashboard-card">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-        <h3 style="margin:0;">📅 今日行程</h3>
-        <div>
-            <input type="date" id="planDateSelector" style="padding:6px;border:1px solid #ccc;border-radius:6px;">
-            <button onclick="resetToToday()"
-        style="
-            padding:8px 16px;
-            background:#27ae60;
-            color:white;
-            border:none;
-            border-radius:20px;
-            cursor:pointer;
-            font-weight:bold;
-            box-shadow:0 2px 6px rgba(0,0,0,0.2);
-            transition:all .2s;
-			background: linear-gradient(135deg,#2ecc71,#27ae60);
-        ">
-    🏠 今天
-</button>
+    <div class="dashboard-header">
+        <h3>📅 今日行程</h3>
+        <div class="date-controls">
+            <input type="date" id="planDateSelector">
+            <button class="today-btn" onclick="resetToToday()">🏠 今天</button>
         </div>
     </div>
 
@@ -547,15 +664,15 @@
  
 <div class="budget-card day-card">
     <h3>💰 預算與花費紀錄 (日幣)</h3>
-    <div style="display: flex; justify-content: space-between; font-size: 1.2rem; margin-bottom: 15px; background: #ecf0f1; padding: 10px; border-radius: 5px;">
-        <div>總預算: ¥<input type="number" id="totalBudget" value="100000" style="width: 80px;" onchange="calculateBudget()"></div>
+    <div class="budget-summary">
+        <div>總預算: ¥<input type="number" id="totalBudget" value="100000" onchange="calculateBudget()"></div>
         <div>剩餘: <strong id="remainingBudget" style="color: #27ae60;">¥100000</strong></div>
     </div>
     
-    <div style="display: flex; gap: 5px; margin-bottom: 15px;">
-        <input type="text" id="expenseItem" placeholder="項目 (例: 買藥妝)" style="flex: 2; padding: 5px;">
-        <input type="number" id="expenseCost" placeholder="金額" style="flex: 1; padding: 5px;">
-        <button onclick="addExpense()" style="background: #3498db; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;">新增</button>
+    <div class="budget-entry-row">
+        <input type="text" id="expenseItem" placeholder="項目 (例: 買藥妝)">
+        <input type="number" id="expenseCost" placeholder="金額">
+        <button onclick="addExpense()">新增</button>
     </div>
 
     <ul id="expenseList" style="list-style: none; padding: 0; margin: 0;">
@@ -3278,7 +3395,9 @@ document
         const savedBudget = localStorage.getItem('travelTotalBudget');
         if (savedBudget) {
             document.getElementById('totalBudget').value = savedBudget;
-        }
+        } else {
+		localStorage.setItem('travelTotalBudget', document.getElementById('totalBudget').value);
+		}
         updateBudgetUI(); // 載入記帳明細
         loadAllWeather(); // 載入即時天氣
     };
