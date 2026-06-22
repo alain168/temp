@@ -483,8 +483,29 @@
             </div>
             <div class="trip-dates">🗓️ 7/4 (六) 出發 → 7/11 (六) 返台<br>✈️ SL396 → KIX → TPE IT213</div>
         </div>		 
- <div id="todayDashboard" class="day-card dashboard-card">
-    <h3>📅 今日行程</h3>
+ 
+<div id="todayDashboard" class="day-card dashboard-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <h3 style="margin:0;">📅 今日行程</h3>
+        <div>
+            <input type="date" id="planDateSelector" style="padding:6px;border:1px solid #ccc;border-radius:6px;">
+            <button onclick="resetToToday()"
+        style="
+            padding:8px 16px;
+            background:#27ae60;
+            color:white;
+            border:none;
+            border-radius:20px;
+            cursor:pointer;
+            font-weight:bold;
+            box-shadow:0 2px 6px rgba(0,0,0,0.2);
+            transition:all .2s;
+			background: linear-gradient(135deg,#2ecc71,#27ae60);
+        ">
+    🏠 今天
+</button>
+        </div>
+    </div>
 
     <div id="todayPlanContent"></div>
 
@@ -713,7 +734,7 @@
 
         // ── 初始化 ────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function() {
-		    initTodayPlan();
+		    const ds=document.getElementById('planDateSelector'); if(ds){ds.value=new Date().toISOString().split('T')[0];} initTodayPlan();
             // 插入進度條到 h3 後面
             const section = document.getElementById('checklist-section');
             const h3 = section.querySelector('h3');
@@ -731,7 +752,39 @@
             renderChecklist();
         });
 		
-		function initTodayPlan() {
+		
+function resetToToday() {
+
+    const today =
+        new Date().toISOString().split('T')[0];
+
+    document.getElementById("planDateSelector").value =
+        today;
+
+    initTodayPlan(today);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const picker =
+        document.getElementById("planDateSelector");
+
+    if (picker) {
+
+        picker.addEventListener('change', function () {
+            initTodayPlan(this.value);
+        });
+
+        picker.value =
+            new Date().toISOString().split('T')[0];
+    }
+});
+
+function updateSelectedPlan(){
+    initTodayPlan(document.getElementById("planDateSelector")?.value);
+}
+
+function initTodayPlan(selectedDate) {
 
    const plans = {
     1:{
@@ -816,7 +869,7 @@
 };
 
     const startDate = new Date('2026-07-04');
-    const today = new Date();
+    const today = selectedDate ? new Date(selectedDate) : new Date();
 
     const diff =
         Math.floor(
