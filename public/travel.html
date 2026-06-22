@@ -586,7 +586,6 @@
         </div>
         <div class="nav-links-wrapper" id="navLinks">
         <a href="#prep" data-section="prep">✈️ 預購與航班</a>
-		<a href="#emergency" data-section="emergency" style="color: #e74c3c; font-weight: bold; border-top: 1px solid #34495e; padding-top: 15px; margin-top: 10px;">🚨 緊急聯絡資訊</a>
         <a href="#flight-items" data-section="flight-items">🧳 行李攜帶須知</a>
         <a href="#day1" data-section="day1">7/4 (六) 關西機場→奈良</a>
         <a href="#day2" data-section="day2">7/5 (日) 宇治/伏見稻荷→京都</a>
@@ -598,7 +597,8 @@
         <a href="#day8" data-section="day8">7/11 (六) 木津市場/Outlet→返台</a>
         <a href="#expert-tips" data-section="expert-tips" style="color: #f39c12; font-weight: bold; margin-top: 10px; border-top: 1px solid #34495e; padding-top: 15px;">⭐ 達人補充攻略</a>
         <a href="#japanese-tips" data-section="japanese-tips" style="color: #f39c12; font-weight: bold;">⭐ 日語對話小幫手</a>
-		
+        <a href="#emergency" data-section="emergency" style="color: #e74c3c; font-weight: bold; border-top: 1px solid #34495e; padding-top: 15px; margin-top: 10px;">🚨 緊急聯絡資訊</a>
+
         </div>
     </div>
 
@@ -670,8 +670,8 @@
     </div>
     
     <div class="budget-entry-row">
-        <input type="text" id="expenseItem" placeholder="項目 (例: 買藥妝)">
-        <input type="number" id="expenseCost" placeholder="金額">
+        <input type="text" id="expenseItem" placeholder="項目 (例: 買藥妝)" onkeydown="if(event.key==='Enter'){document.getElementById('expenseCost').focus();}">
+        <input type="number" id="expenseCost" placeholder="金額" onkeydown="if(event.key==='Enter'){addExpense();}">
         <button onclick="addExpense()">新增</button>
     </div>
 
@@ -1029,6 +1029,11 @@ function initTodayPlan(selectedDate) {
 
     const p = plans[diff];
 
+    const totalBudget = parseInt(localStorage.getItem('travelTotalBudget')) || 0;
+    const totalSpent  = parseInt(localStorage.getItem('traveltotalSpent'))  || 0;
+    const budgetLeft  = totalBudget - totalSpent;
+    const budgetColor = budgetLeft < 0 ? '#e74c3c' : '#27ae60';
+
     container.innerHTML = `
     <div class="today-title">
         ${p.title}
@@ -1045,13 +1050,17 @@ function initTodayPlan(selectedDate) {
         <div>🎯 任務</div>
         <div>${p.mission}</div>
 
-        <div>💰 預算</div>
+        <div>💰 今日預算</div>
         <div>¥${p.budget.toLocaleString()}</div>
 
-        <div>剩餘旅程：${8 - diff} 天</div>
-		<div>總預算：¥${localStorage.getItem('travelTotalBudget')}</div>
-        <div>累計支出：¥${localStorage.getItem('traveltotalSpent')}</div>
-        <div>剩餘預算：¥${localStorage.getItem('travelTotalBudget') - localStorage.getItem('traveltotalSpent')}</div>
+        <div>剩餘旅程</div>
+        <div>${8 - diff} 天</div>
+
+        <div>累計支出</div>
+        <div>¥${totalSpent > 0 ? totalSpent.toLocaleString() : '—'}</div>
+
+        <div>剩餘預算</div>
+        <div style="color:${budgetColor};font-weight:bold;">¥${totalBudget > 0 ? budgetLeft.toLocaleString() : '—'}</div>
        </div>
 `;
 document
@@ -3156,7 +3165,12 @@ document
     /* ===== 2. 行動版漢堡選單 ===== */
     function toggleMobileNav() {
         const nav = document.getElementById('navLinks');
-        nav.classList.toggle('open');
+        const btn = document.getElementById('hamburgerBtn');
+        const isOpen = nav.classList.toggle('open');
+        if (btn) {
+            btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            btn.setAttribute('aria-label', isOpen ? '收起選單' : '展開選單');
+        }
     }
 
     /* ===== 側邊選單點選後精確捲動定位（修正 iOS Safari sticky 導航列偏移）===== */
@@ -3245,20 +3259,75 @@ document
                 const mins  = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 num.textContent  = days;
                 label.innerHTML  = '天後出發<br><span style="font-size:0.75rem;opacity:0.85;">' + hours + ' 小時 ' + mins + ' 分</span>';
+                // 動態頁面標題
+                document.title = '距出發還有 ' + days + ' 天 | 京阪奈行程表';
             } else if (now <= RETURN) {
                 bar.classList.add('trip-active');
                 const dayIn = Math.floor((now - DEPART) / (1000 * 60 * 60 * 24)) + 1;
                 num.textContent = 'Day ' + dayIn;
                 label.innerHTML = '旅途進行中！<br><span style="font-size:0.75rem;opacity:0.85;">玩得開心 🎉</span>';
+                document.title = '旅途 Day ' + dayIn + ' | 京阪奈行程表';
             } else {
                 bar.classList.add('trip-done');
                 const daysSince = Math.floor((now - RETURN) / (1000 * 60 * 60 * 24));
                 num.textContent = daysSince;
                 label.innerHTML = '天前結束旅程<br><span style="font-size:0.75rem;opacity:0.85;">歡迎回台灣 ✈️</span>';
+                document.title = '旅程結束 | 京阪奈行程表';
             }
         }
         update();
         setInterval(update, 30000);
+    })();
+
+    /* ===== 4b. 日程卡片時間狀態高亮 ===== */
+    (function markDayCardStates() {
+        const TRIP_START = new Date('2026-07-04');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const dayMap = {
+            'day1': new Date('2026-07-04'),
+            'day2': new Date('2026-07-05'),
+            'day3': new Date('2026-07-06'),
+            'day4': new Date('2026-07-07'),
+            'day5': new Date('2026-07-08'),
+            'day6': new Date('2026-07-09'),
+            'day7': new Date('2026-07-10'),
+            'day8': new Date('2026-07-11'),
+        };
+
+        Object.entries(dayMap).forEach(function([id, date]) {
+            const card = document.getElementById(id);
+            if (!card) return;
+            const cardDate = new Date(date);
+            cardDate.setHours(0, 0, 0, 0);
+
+            if (cardDate.getTime() === today.getTime()) {
+                // 今天：綠色頂部 + 標籤
+                card.style.borderTopColor = '#27ae60';
+                card.style.boxShadow = '0 0 0 2px rgba(39,174,96,0.25), 0 4px 12px rgba(0,0,0,0.08)';
+                const h2 = card.querySelector('h2');
+                if (h2) {
+                    const badge = document.createElement('span');
+                    badge.textContent = '✅ 今日';
+                    badge.style.cssText = 'display:inline-block;margin-left:10px;padding:2px 8px;background:#27ae60;color:#fff;border-radius:12px;font-size:0.7rem;font-weight:bold;vertical-align:middle;';
+                    h2.appendChild(badge);
+                }
+            } else if (cardDate < today) {
+                // 過去：灰色調淡
+                card.style.opacity = '0.62';
+                card.style.borderTopColor = '#95a5a6';
+                const h2 = card.querySelector('h2');
+                if (h2 && !h2.querySelector('.past-badge')) {
+                    const badge = document.createElement('span');
+                    badge.className = 'past-badge';
+                    badge.textContent = '已完成';
+                    badge.style.cssText = 'display:inline-block;margin-left:10px;padding:2px 8px;background:#95a5a6;color:#fff;border-radius:12px;font-size:0.7rem;font-weight:bold;vertical-align:middle;';
+                    h2.appendChild(badge);
+                }
+            }
+            // 未來：維持原樣
+        });
     })();
 
     /* ===== 5. Scroll Spy（側邊欄高亮） ===== */
