@@ -344,13 +344,118 @@
         .countdown-bar .days-label { font-size: 0.8rem; opacity: 0.85; }
         .countdown-bar .trip-dates { font-size: 0.8rem; opacity: 0.9; text-align: right; }
 
-        /* ===== 時間軸 Timeline 手機版優化 ===== */
-        .timeline { position: relative; padding-left: 24px; margin: 20px 0; }
-        .timeline::before { content: ''; position: absolute; top: 0; left: 6px; height: 100%; width: 2px; background: #3498db; }
-        .timeline-item { position: relative; margin-bottom: 20px; }
-        .timeline-item::before { content: ''; position: absolute; left: -22px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 3px solid #3498db; }
-        .timeline-time { font-weight: bold; color: #e67e22; margin-bottom: 4px; font-size: 1rem; }
-        .timeline-content { background: #f9f9f9; padding: 12px; border-radius: 8px; font-size: 0.95rem; }
+        /* ===== 時間軸 Timeline 重新設計 ===== */
+        .timeline {
+            position: relative;
+            padding: 4px 0 4px 58px;
+            margin: 20px 0;
+        }
+
+        /* 垂直軌道：漸層淡入淡出讓兩端不突兀 */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            bottom: 20px;
+            left: 18px;
+            width: 4px;
+            background: linear-gradient(to bottom,
+                rgba(52,152,219,0) 0%,
+                #3498db 8%,
+                #2980b9 50%,
+                #3498db 92%,
+                rgba(52,152,219,0) 100%);
+            border-radius: 4px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 22px;
+        }
+        .timeline-item:last-child { margin-bottom: 0; }
+
+        /* 站點外圈 */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -48px;
+            top: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--card-bg, #fff);
+            border: 3px solid #3498db;
+            box-shadow: 0 0 0 4px rgba(52,152,219,0.12);
+            z-index: 1;
+            transition: border-color .25s, box-shadow .25s;
+        }
+
+        /* 站點內點 */
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -41px;
+            top: 17px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #3498db;
+            z-index: 2;
+            transition: background .25s, transform .25s;
+        }
+
+        .timeline-item:hover::before {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 5px rgba(231,76,60,.14);
+        }
+        .timeline-item:hover::after {
+            background: #e74c3c;
+            transform: scale(1.3);
+        }
+
+        /* 時間 badge */
+        .timeline-time {
+            display: inline-block;
+            background: linear-gradient(125deg, #e74c3c 0%, #c0392b 100%);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 13px;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            letter-spacing: .03em;
+            box-shadow: 0 2px 8px rgba(192,57,43,.28);
+            line-height: 1.5;
+        }
+
+        /* 內容卡片 */
+        .timeline-content {
+            background: var(--card-bg, #fff);
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 0.93rem;
+            line-height: 1.65;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+            border-left: 4px solid #3498db;
+            transition: transform .22s ease, box-shadow .22s ease, border-left-color .22s;
+        }
+        .timeline-content > *:last-child { margin-bottom: 0; }
+
+        .timeline-item:hover .timeline-content {
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,.10);
+            border-left-color: #e74c3c;
+        }
+
+        /* 手機版 timeline 縮小 padding */
+        @media (max-width: 480px) {
+            .timeline { padding-left: 44px; }
+            .timeline::before { left: 12px; width: 3px; }
+            .timeline-item::before { left: -36px; width: 20px; height: 20px; top: 8px; }
+            .timeline-item::after { left: -30px; top: 14px; width: 8px; height: 8px; }
+            .timeline-time { font-size: 0.75rem; padding: 3px 10px; }
+            .timeline-content { padding: 10px 13px; }
+        }
 
         /* ===== 行動版清單與打卡 Checkbox 優化 ===== */
         .check-in-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
@@ -515,7 +620,14 @@
         body.dark-mode .nav-links-wrapper { background-color: #0f1218; }
         body.dark-mode .flight-info, body.dark-mode .prep-info { background-color: #1d2e3d; border-left-color: #2980b9; color: var(--text-color); }
         body.dark-mode .hotel-info { background-color: #2a2510; border-color: #b7750d; }
-        body.dark-mode .timeline-content { background-color: #1e2330; color: var(--text-color); }
+        body.dark-mode .timeline::before { background: linear-gradient(to bottom, rgba(59,130,160,0) 0%, #3b82a0 8%, #2d6b8a 50%, #3b82a0 92%, rgba(59,130,160,0) 100%); }
+        body.dark-mode .timeline-item::before { background: var(--card-bg); border-color: #3b82a0; }
+        body.dark-mode .timeline-item::after { background: #3b82a0; }
+        body.dark-mode .timeline-item:hover::before { border-color: #c0392b; box-shadow: 0 0 0 5px rgba(192,57,43,.14); }
+        body.dark-mode .timeline-item:hover::after { background: #c0392b; }
+        body.dark-mode .timeline-time { background: linear-gradient(125deg, #c0392b 0%, #96281b 100%); }
+        body.dark-mode .timeline-content { background-color: #1e2330; color: var(--text-color); border-left-color: #3b82a0; box-shadow: 0 2px 12px rgba(0,0,0,.22); }
+        body.dark-mode .timeline-item:hover .timeline-content { border-left-color: #c0392b; box-shadow: 0 6px 20px rgba(0,0,0,.28); }
         body.dark-mode input { background-color: #151922; color: var(--text-color); border-color: #3b5068; }
         body.dark-mode .budget-summary { background-color: #1e2330; }
         body.dark-mode .weather-card { background: linear-gradient(145deg, #1a2a38, #1d3347); }
@@ -1864,20 +1976,24 @@ document
 <p>根據您目前的行程表規劃，<strong>是有時間逛奈良公園的</strong>，而且時間算充裕！</p>
 <p>以下為您分析當天的時間動線：</p>
 <h3>🕒 7/4 (六) 當日時間推算</h3>
-<ul>
-<li>
-<p><strong>下午 14:00</strong>：預計從關西機場出關。</p>
-</li>
-<li>
-<p><strong>下午 14:14 或 14:44</strong>：搭乘特急 HARUKA 前往天王寺轉車。</p>
-</li>
-<li>
-<p><strong>下午 16:00～16:30 之間</strong>：抵達 <strong>JR 奈良站</strong>。</p>
-</li>
-<li>
-<p><strong>下午 16:30 之後</strong>：至大和魯內酒店放好行李，搭乘公車（約 15 分鐘）前往奈良公園與東大寺。</p>
-</li>
-</ul>
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-time">下午 14:00</div>
+    <div class="timeline-content">預計從關西機場出關。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">14:14 或 14:44</div>
+    <div class="timeline-content">搭乘特急 HARUKA 前往天王寺轉車。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">16:00 – 16:30</div>
+    <div class="timeline-content">抵達 <strong>JR 奈良站</strong>。</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">16:30+</div>
+    <div class="timeline-content">至大和魯內酒店放好行李，搭乘公車（約 15 分鐘）前往奈良公園與東大寺。</div>
+  </div>
+</div>
 <p style="margin-bottom:8px;"><a href="#day1" style="font-size:0.85rem; color:#e74c3c; font-weight:bold;">↩ 回到 Day 1 (7/4 奈良) 行程</a></p>
 <h3 id="nara-tips">💡 逛奈良公園的實用建議</h3>
 <ol>
@@ -1951,28 +2067,33 @@ document
 <p>您的行程重點是：<code>大阪車站 → 天神橋筋商店街 → 大阪車站（梅田百貨群）</code>。以下是為您優化後的黃金時間分配與實戰建議：</p>
 <p style="margin-bottom:8px;"><a href="#day4" style="font-size:0.85rem; color:#f39c12; font-weight:bold;">↩ 回到 Day 4 (7/7 梅田血拼) 行程</a></p>
 <h3 id="tip-day4-timeline">⏱️ 7/7 建議時間配比</h3>
-<ul>
-<li>
-<p><strong>10:30 - 11:00 【輕鬆移動與寄物】</strong></p>
-<p>從京都搭 JR 新快速（約 29 分鐘）抵達大阪站。出站後，先在您筆記中查好的 <strong>大阪站置物櫃（如中央口走道或櫻橋口）</strong> 把大行李鎖好，或去環亞貴賓室寄放。<strong>「雙手空空」是逛這兩個地方的最高指導原則！</strong></p>
-</li>
-<li>
-<p><strong>11:00 - 13:30 【天神橋筋商店街：午餐與散策】</strong></p>
-<p>從 JR 大阪站搭環狀線只要 <strong>2 分鐘（1 站）</strong> 就到 <strong>JR 天滿站</strong>。一出站就是商店街（天神橋筋四丁目附近）。</p>
-<ul>
-<li>
-<p><strong>必吃插旗：</strong> 筆記中的 <strong>中村屋可樂餅</strong>、<strong>鳴門鯛燒本舖</strong>，並去 <strong>天滿宮</strong> 感受一下天滿天神七夕祭的氣氛。</p>
-</li>
-<li>
-<p><em>提醒：</em> 這條街是日本最長商店街（2.6 公里），<strong>千萬不要想從頭走到尾</strong>。以天滿站為中心，往左往右各逛 1-2 個街區、吃飽喝足就可以折返了，把體力留給下午。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>14:00 - 20:00（或更晚） 【梅田百貨商圈：全力血拼】</strong></p>
-<p>搭 2 分鐘火車回到 JR 大阪站（梅田）。此時百貨公司、藥妝店全部開齊。</p>
-</li>
-</ul>
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-time">10:30 – 11:00</div>
+    <div class="timeline-content">
+      <strong>【輕鬆移動與寄物】</strong>
+      <p>從京都搭 JR 新快速（約 29 分鐘）抵達大阪站。出站後，先在您筆記中查好的 <strong>大阪站置物櫃（如中央口走道或櫻橋口）</strong> 把大行李鎖好，或去環亞貴賓室寄放。<strong>「雙手空空」是逛這兩個地方的最高指導原則！</strong></p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">11:00 – 13:30</div>
+    <div class="timeline-content">
+      <strong>【天神橋筋商店街：午餐與散策】</strong>
+      <p>從 JR 大阪站搭環狀線只要 <strong>2 分鐘（1 站）</strong> 就到 <strong>JR 天滿站</strong>。一出站就是商店街（天神橋筋四丁目附近）。</p>
+      <ul>
+        <li><strong>必吃插旗：</strong> 筆記中的 <strong>中村屋可樂餅</strong>、<strong>鳴門鯛燒本舖</strong>，並去 <strong>天滿宮</strong> 感受一下天滿天神七夕祭的氣氛。</li>
+        <li><em>提醒：</em> 這條街是日本最長商店街（2.6 公里），<strong>千萬不要想從頭走到尾</strong>。以天滿站為中心，往左往右各逛 1-2 個街區、吃飽喝足就可以折返了，把體力留給下午。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">14:00 – 20:00</div>
+    <div class="timeline-content">
+      <strong>【梅田百貨商圈：全力血拼】</strong>
+      <p>搭 2 分鐘火車回到 JR 大阪站（梅田）。此時百貨公司、藥妝店全部開齊。</p>
+    </div>
+  </div>
+</div>
 <h3 id="umeda-strategy">🛍️ 梅田百貨超級戰略（依據地理最順路建議）</h3>
 <p>梅田是出了名的「迷宮」，各大百貨都有特定的超強主打。為了不走回頭路，建議您依照以下地理位置最順的路線來逛：</p>
 <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
@@ -2062,111 +2183,106 @@ document
 <p>這條路線最符合日本旅遊的黃金法則：<strong>早上去清水寺避開暴風式的人潮</strong>，下午回市區吹冷氣逛街吃甜點。</p>
 <h3>🗺️ 路線順序</h3>
 <p><strong>飯店 ➔ 清水寺 ➔ 三年坂、二年坂 ➔ 花見小路、祇園白川 ➔ 四條河原町商圈（高島屋 ➔ 藤井大丸 ➔ 大丸京都店） ➔ 步行回飯店</strong></p>
-<ul>
-<li>
-<p><strong>07:30 - 09:30 【清水寺】</strong></p>
-<ul>
-<li>
-<p><strong>交通：</strong> 從飯店步行至「四條烏丸」站搭乘 <strong>207號市公車</strong> 至「清水道」或「五条坂」下車，步行約 11 分鐘上山。</p>
-</li>
-<li>
-<p><strong>亮點：</strong> 清水寺早上 6:00 就開門。8點前抵達可以享受難得的清幽，拍到沒有背景路人的清水舞台。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>09:30 - 11:00 【三年坂（產寧坂） ➔ 二年坂】</strong></p>
-<ul>
-<li><strong>玩法：</strong> 順著清水寺向下的表參道一路漫步。此時沿途的特色老店陸續開門，邊走邊逛（可以沿路注意醬油團子、八橋等清水寺周邊小吃）。</li>
-</ul>
-</li>
-<li>
-<p><strong>11:00 - 12:30 【花見小路 ➔ 祇園白川】</strong></p>
-<ul>
-<li><strong>玩法：</strong> 從二年坂沿著寧寧之道、石塀小路一路散步到祇園。到【祇園鰻川】享用現烤鰻魚飯當午餐，吃飽後到旁邊的【祇園白川】欣賞柳樹與小橋流水的町家風情。</li>
-</ul>
-</li>
-<li>
-<p><strong>12:30 - 15:30 【四條河原町：高島屋 ➔ 藤井大丸】</strong></p>
-<ul>
-<li>
-<p><strong>交通：</strong> 從祇園走過四條大橋，步行約 10 分鐘即可抵達四條河原町商圈。</p>
-</li>
-<li>
-<p><strong>高島屋 S.C.：</strong> 先衝 7 樓 <strong>Nintendo KYOTO</strong>（順便逛 5 樓的寶可夢中心），接著到 B1 伴手禮區大點兵（小倉山莊仙貝、虎屋羊羹）。</p>
-</li>
-<li>
-<p><strong>藤井大丸：</strong> 步行 2 分鐘即達，直接上 4 樓吃 <strong>HARBS 水果千層蛋糕</strong> 當下午茶，或者外帶。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>15:30 - 18:30 【烏丸商圈：大丸京都店】</strong></p>
-<ul>
-<li><strong>玩法：</strong> 沿著四條通往烏丸方向逛過去。進<strong>大丸京都店</strong>主攻 B1 的「最強地庫食品館」，買限定的 Malebranche「生奶油戚風蛋糕夾心」與阿闍梨餅。</li>
-</ul>
-</li>
-<li>
-<p><strong>18:30+ 【晚餐與回飯店】</strong></p>
-<ul>
-<li>
-<p><strong>晚餐：</strong> 步行到大丸附近的【燒肉弘商店 烏丸錦】或【すき焼き 肉のひろ重】大飽口福。</p>
-</li>
-<li>
-<p><strong>回飯店：</strong> 餐廳離您入住的「相鐵FRESA INN - 京都四條烏丸」步行僅約 5-7 分鐘，提著滿滿戰利品直接回飯店放行李、在大廳拿免費面膜和泡澡粉回房間泡澡放鬆，超級完美！</p>
-</li>
-</ul>
-</li>
-</ul>
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-time">07:30 – 09:30</div>
+    <div class="timeline-content">
+      <strong>【清水寺】</strong>
+      <ul>
+        <li><strong>交通：</strong> 從飯店步行至「四條烏丸」站搭乘 <strong>207號市公車</strong> 至「清水道」或「五条坂」下車，步行約 11 分鐘上山。</li>
+        <li><strong>亮點：</strong> 清水寺早上 6:00 就開門。8點前抵達可以享受難得的清幽，拍到沒有背景路人的清水舞台。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">09:30 – 11:00</div>
+    <div class="timeline-content">
+      <strong>【三年坂（產寧坂） ➔ 二年坂】</strong>
+      <p><strong>玩法：</strong> 順著清水寺向下的表參道一路漫步。此時沿途的特色老店陸續開門，邊走邊逛（可以沿路注意醬油團子、八橋等清水寺周邊小吃）。</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">11:00 – 12:30</div>
+    <div class="timeline-content">
+      <strong>【花見小路 ➔ 祇園白川】</strong>
+      <p><strong>玩法：</strong> 從二年坂沿著寧寧之道、石塀小路一路散步到祇園。到【祇園鰻川】享用現烤鰻魚飯當午餐，吃飽後到旁邊的【祇園白川】欣賞柳樹與小橋流水的町家風情。</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">12:30 – 15:30</div>
+    <div class="timeline-content">
+      <strong>【四條河原町：高島屋 ➔ 藤井大丸】</strong>
+      <ul>
+        <li><strong>交通：</strong> 從祇園走過四條大橋，步行約 10 分鐘即可抵達四條河原町商圈。</li>
+        <li><strong>高島屋 S.C.：</strong> 先衝 7 樓 <strong>Nintendo KYOTO</strong>（順便逛 5 樓的寶可夢中心），接著到 B1 伴手禮區大點兵（小倉山莊仙貝、虎屋羊羹）。</li>
+        <li><strong>藤井大丸：</strong> 步行 2 分鐘即達，直接上 4 樓吃 <strong>HARBS 水果千層蛋糕</strong> 當下午茶，或者外帶。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">15:30 – 18:30</div>
+    <div class="timeline-content">
+      <strong>【烏丸商圈：大丸京都店】</strong>
+      <p><strong>玩法：</strong> 沿著四條通往烏丸方向逛過去。進<strong>大丸京都店</strong>主攻 B1 的「最強地庫食品館」，買限定的 Malebranche「生奶油戚風蛋糕夾心」與阿闍梨餅。</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">18:30+</div>
+    <div class="timeline-content">
+      <strong>【晚餐與回飯店】</strong>
+      <ul>
+        <li><strong>晚餐：</strong> 步行到大丸附近的【燒肉弘商店 烏丸錦】或【すき焼き 肉のひろ重】大飽口福。</li>
+        <li><strong>回飯店：</strong> 餐廳離您入住的「相鐵FRESA INN - 京都四條烏丸」步行僅約 5-7 分鐘，提著滿滿戰利品直接回飯店放行李、在大廳拿免費面膜和泡澡粉回房間泡澡放鬆，超級完美！</li>
+      </ul>
+    </div>
+  </div>
+</div>
 <h2>提案二：【微甜慵懶風】先咖啡後古蹟（推薦不想太早起、想看祇園夜景的你）</h2>
 <p>如果您 7/5 的行程比較累、7/6 想稍微睡飽一點，或者想體驗傍晚點燈後的祇園風情，可以考慮把行程反過來走。</p>
 <h3>🗺️ 路線順序</h3>
 <p><strong>飯店 ➔ Smart Coffee（早餐） ➔ 大丸京都店 ➔ 藤井大丸 ➔ 高島屋 ➔ 祇園、花見小路 ➔ 二年坂、三年坂 ➔ 清水寺（夜景/黃昏） ➔ 搭公車或計程車回飯店</strong></p>
-<ul>
-<li>
-<p><strong>08:30 - 10:00 【Smart Coffee 復古早餐】</strong></p>
-<ul>
-<li><strong>玩法：</strong> 從飯店散步或搭地下鐵到三條寺町通的老字號【Smart Coffee】，享用滑嫩雞蛋三明治與厚法式吐司。</li>
-</ul>
-</li>
-<li>
-<p><strong>10:00 - 14:30 【百貨血拼馬拉松（大丸 ➔ 藤井大丸 ➔ 高島屋）】</strong></p>
-<ul>
-<li>
-<p>依序從烏丸一側逛回河原町一側：</p>
-<ol>
-<li>
-<p><strong>大丸京都店：</strong> 剛好趕上 10 點開門，先排隊買限定甜點和阿闍梨餅。</p>
-</li>
-<li>
-<p><strong>藤井大丸：</strong> 午餐或午茶可在這裡的 <strong>喫茶 Madrague</strong> 挑戰超厚神玉子燒三明治。</p>
-</li>
-<li>
-<p><strong>高島屋：</strong> 逛任天堂旗艦店、換 5% 購物卡血拼。</p>
-</li>
-</ol>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>14:30 - 17:00 【祇園白川 ➔ 花見小路 ➔ 二年坂、三年坂】</strong></p>
-<ul>
-<li><strong>玩法：</strong> 把沉重的戰利品先寄放在高島屋或退稅櫃台。空手散步過橋，午後的古街非常有京都韻味，一路上坡往清水寺前進。</li>
-</ul>
-</li>
-<li>
-<p><strong>17:00 - 18:30 【清水寺黃昏之美】</strong></p>
-<ul>
-<li><strong>亮點：</strong> 清水寺通常於 18:00 或 18:30 關門（依季節而定）。傍晚時分遊客會減少，且有機會看到美麗的夕陽餘暉灑在清水舞台與京都街景上。</li>
-</ul>
-</li>
-<li>
-<p><strong>18:30+ 【晚餐與回飯店】</strong></p>
-<ul>
-<li>下山後在清水寺周邊或河原町享用壽喜燒（如高島屋的【三嶋亭】分店，排隊人潮相對少），之後搭乘市公車 207 號或直接打車輕鬆回四條烏丸的飯店。</li>
-</ul>
-</li>
-</ul>
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-time">08:30 – 10:00</div>
+    <div class="timeline-content">
+      <strong>【Smart Coffee 復古早餐】</strong>
+      <p><strong>玩法：</strong> 從飯店散步或搭地下鐵到三條寺町通的老字號【Smart Coffee】，享用滑嫩雞蛋三明治與厚法式吐司。</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">10:00 – 14:30</div>
+    <div class="timeline-content">
+      <strong>【百貨血拼馬拉松（大丸 ➔ 藤井大丸 ➔ 高島屋）】</strong>
+      <p>依序從烏丸一側逛回河原町一側：</p>
+      <ol>
+        <li><strong>大丸京都店：</strong> 剛好趕上 10 點開門，先排隊買限定甜點和阿闍梨餅。</li>
+        <li><strong>藤井大丸：</strong> 午餐或午茶可在這裡的 <strong>喫茶 Madrague</strong> 挑戰超厚神玉子燒三明治。</li>
+        <li><strong>高島屋：</strong> 逛任天堂旗艦店、換 5% 購物卡血拼。</li>
+      </ol>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">14:30 – 17:00</div>
+    <div class="timeline-content">
+      <strong>【祇園白川 ➔ 花見小路 ➔ 二年坂、三年坂】</strong>
+      <p><strong>玩法：</strong> 把沉重的戰利品先寄放在高島屋或退稅櫃台。空手散步過橋，午後的古街非常有京都韻味，一路上坡往清水寺前進。</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">17:00 – 18:30</div>
+    <div class="timeline-content">
+      <strong>【清水寺黃昏之美】</strong>
+      <p><strong>亮點：</strong> 清水寺通常於 18:00 或 18:30 關門（依季節而定）。傍晚時分遊客會減少，且有機會看到美麗的夕陽餘暉灑在清水舞台與京都街景上。</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">18:30+</div>
+    <div class="timeline-content">
+      <strong>【晚餐與回飯店】</strong>
+      <p>下山後在清水寺周邊或河原町享用壽喜燒（如高島屋的【三嶋亭】分店，排隊人潮相對少），之後搭乘市公車 207 號或直接打車輕鬆回四條烏丸的飯店。</p>
+    </div>
+  </div>
+</div>
 <h3>💡 聰明旅遊小貼士</h3>
 <ol>
 <li>
@@ -2184,111 +2300,97 @@ document
 <blockquote>
 <p><strong>適合情境：</strong> 7/9（週四）下午來不及去大阪城，留到今天早上出發。</p>
 </blockquote>
-<ul>
-<li>
-<p><strong>10:00 - 12:30 【上午：歷史與乘船體驗】</strong></p>
-<ul>
-<li>
-<p><strong>大阪城天守閣</strong> ＆ <strong>大阪城御座船</strong>（皆可憑周遊卡免費入場/乘船）</p>
-</li>
-<li>
-<p><em>順路提示：</em> 早上先衝去御座船碼頭換好船票，再上天守閣參觀，下樓剛好搭船。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>13:00 - 14:30 【午餐：傳統浪速風情】</strong></p>
-<ul>
-<li>
-<p>搭乘地鐵至「惠美須町站」，前往 <strong>新世界 / 通天閣</strong>。</p>
-</li>
-<li>
-<p><em>美食推薦：</em> <strong>達摩串炸（串カツだるま）</strong>，體驗大阪最道地的串炸文化。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>14:30 - 16:30 【下午：高空與經典地標】</strong></p>
-<ul>
-<li>
-<p><strong>通天閣一般展望台</strong>（憑周遊卡免費點燈展望）</p>
-</li>
-<li>
-<p>有時間可順道步行至 <strong>天王寺動物園</strong> 或 <strong>四天王寺</strong>（皆周遊卡免費）。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>17:00 - 21:30 【傍晚至夜間：血拼與極致夜景】</strong></p>
-<ul>
-<li>
-<p>移動至 <strong>難波 / 心齋橋 / 道頓堀</strong> 地區。</p>
-</li>
-<li>
-<p><em>必做活動：</em> 傍晚先到 <strong>道頓堀水上觀光船</strong>（周遊卡免費）換夜間船票。</p>
-</li>
-<li>
-<p><em>逛街進攻：</em> 逛 <strong>心齋橋筋商店街</strong>（美國村），順便去跑跑人（固力果招牌）拍照。</p>
-</li>
-<li>
-<p><em>晚餐大飽口福：</em> <strong>美津の</strong> 或 <strong>千房</strong> 大阪燒、<strong>甲賀流</strong> 章魚燒。</p>
-</li>
-<li>
-<p><em>完美收尾：</em> 搭乘夜間的道頓堀水上觀光船，欣賞兩岸霓虹燈。</p>
-</li>
-</ul>
-</li>
-</ul>
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-time">10:00 – 12:30</div>
+    <div class="timeline-content">
+      <strong>【上午：歷史與乘船體驗】</strong>
+      <ul>
+        <li><strong>大阪城天守閣</strong> ＆ <strong>大阪城御座船</strong>（皆可憑周遊卡免費入場/乘船）</li>
+        <li><em>順路提示：</em> 早上先衝去御座船碼頭換好船票，再上天守閣參觀，下樓剛好搭船。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">13:00 – 14:30</div>
+    <div class="timeline-content">
+      <strong>【午餐：傳統浪速風情】</strong>
+      <ul>
+        <li>搭乘地鐵至「惠美須町站」，前往 <strong>新世界 / 通天閣</strong>。</li>
+        <li><em>美食推薦：</em> <strong>達摩串炸（串カツだるま）</strong>，體驗大阪最道地的串炸文化。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">14:30 – 16:30</div>
+    <div class="timeline-content">
+      <strong>【下午：高空與經典地標】</strong>
+      <ul>
+        <li><strong>通天閣一般展望台</strong>（憑周遊卡免費點燈展望）</li>
+        <li>有時間可順道步行至 <strong>天王寺動物園</strong> 或 <strong>四天王寺</strong>（皆周遊卡免費）。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">17:00 – 21:30</div>
+    <div class="timeline-content">
+      <strong>【傍晚至夜間：血拼與極致夜景】</strong>
+      <ul>
+        <li>移動至 <strong>難波 / 心齋橋 / 道頓堀</strong> 地區。</li>
+        <li><em>必做活動：</em> 傍晚先到 <strong>道頓堀水上觀光船</strong>（周遊卡免費）換夜間船票。</li>
+        <li><em>逛街進攻：</em> 逛 <strong>心齋橋筋商店街</strong>（美國村），順便去跑跑人（固力果招牌）拍照。</li>
+        <li><em>晚餐大飽口福：</em> <strong>美津の</strong> 或 <strong>千房</strong> 大阪燒、<strong>甲賀流</strong> 章魚燒。</li>
+        <li><em>完美收尾：</em> 搭乘夜間的道頓堀水上觀光船，欣賞兩岸霓虹燈。</li>
+      </ul>
+    </div>
+  </div>
+</div>
 <h2>方案 B：純市區深度購物與慢活一日遊</h2>
 <blockquote>
 <p><strong>適合情境：</strong> 7/9 已經順利玩完大阪城，7/10 想專心進攻難波、心齋橋與南區景點。</p>
 </blockquote>
-<ul>
-<li>
-<p><strong>10:00 - 12:30 【上午：動漫與拍照聖地】</strong></p>
-<ul>
-<li>
-<p><strong>難波八阪神社</strong>（巨大的獅子頭舞台，求運勢與除厄，步行可達）。</p>
-</li>
-<li>
-<p>接著步行前往 <strong>千日前道具屋筋商店街</strong> 或 <strong>黑門市場</strong> 走走（黑門市場建議走馬看花，吃小東西即可）。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>13:00 - 15:30 【午後：復古街道與文藝】</strong></p>
-<ul>
-<li>
-<p><strong>法善寺橫丁</strong>：參觀苔蘚滿布的水掛不動尊，感受喧囂市區中的寧靜。</p>
-</li>
-<li>
-<p><strong>上方浮世繪館</strong>（憑周遊卡免費入場），就在法善寺旁，吹冷氣看江戶時代藝術。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>15:30 - 18:30 【下午：天王寺與新世界激戰】</strong></p>
-<ul>
-<li>
-<p>搭地鐵至天王寺站，逛 <strong>阿倍野 Q's mall</strong>。</p>
-</li>
-<li>
-<p>傍晚散步至 <strong>新世界</strong>，登上 <strong>通天閣一般展望台</strong> 看日落與亮燈。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>19:00 - 21:30 【夜間：道頓堀遊船與美食】</strong></p>
-<ul>
-<li>
-<p>回到道頓堀搭乘 <strong>道頓堀水上觀光船</strong> 或 <strong>WONDER CRUISE</strong>（皆可憑周遊卡免費，擇一即可）。</p>
-</li>
-<li>
-<p><em>晚餐：</em> 享用拉麵（金龍/四天王）或大啖北極星蛋包飯。</p>
-</li>
-</ul>
-</li>
-</ul>
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-time">10:00 – 12:30</div>
+    <div class="timeline-content">
+      <strong>【上午：動漫與拍照聖地】</strong>
+      <ul>
+        <li><strong>難波八阪神社</strong>（巨大的獅子頭舞台，求運勢與除厄，步行可達）。</li>
+        <li>接著步行前往 <strong>千日前道具屋筋商店街</strong> 或 <strong>黑門市場</strong> 走走（黑門市場建議走馬看花，吃小東西即可）。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">13:00 – 15:30</div>
+    <div class="timeline-content">
+      <strong>【午後：復古街道與文藝】</strong>
+      <ul>
+        <li><strong>法善寺橫丁</strong>：參觀苔蘚滿布的水掛不動尊，感受喧囂市區中的寧靜。</li>
+        <li><strong>上方浮世繪館</strong>（憑周遊卡免費入場），就在法善寺旁，吹冷氣看江戶時代藝術。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">15:30 – 18:30</div>
+    <div class="timeline-content">
+      <strong>【下午：天王寺與新世界激戰】</strong>
+      <ul>
+        <li>搭地鐵至天王寺站，逛 <strong>阿倍野 Q's mall</strong>。</li>
+        <li>傍晚散步至 <strong>新世界</strong>，登上 <strong>通天閣一般展望台</strong> 看日落與亮燈。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">19:00 – 21:30</div>
+    <div class="timeline-content">
+      <strong>【夜間：道頓堀遊船與美食】</strong>
+      <ul>
+        <li>回到道頓堀搭乘 <strong>道頓堀水上觀光船</strong> 或 <strong>WONDER CRUISE</strong>（皆可憑周遊卡免費，擇一即可）。</li>
+        <li><em>晚餐：</em> 享用拉麵（金龍/四天王）或大啖北極星蛋包飯。</li>
+      </ul>
+    </div>
+  </div>
+</div>
 <h3>💡 7/10 備忘錄貼心提醒</h3>
 <ol>
 <li>
