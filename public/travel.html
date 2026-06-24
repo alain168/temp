@@ -398,13 +398,25 @@
             font-size: 1rem;
             background: #faf9f7;
         }
+        .budget-list-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            border-bottom: 2px solid rgba(127,127,127,0.3);
+            padding: 8px 4px;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
         .budget-entry-row {
             display: grid;
-            grid-template-columns: minmax(0, 2fr) minmax(96px, 1fr) auto;
+            grid-template-columns: 1.2fr 1fr 2fr 1.2fr auto;
             gap: 8px;
             margin-bottom: 15px;
         }
-        .budget-entry-row input {
+        .budget-entry-row input,
+        .budget-entry-row select {
             min-width: 0;
             min-height: 44px;
             padding: 10px 12px;
@@ -713,7 +725,8 @@
         body.dark-mode .timeline-item:hover::after { background: var(--accent-color); }
         body.dark-mode .timeline-content { background-color: #181e28; color: var(--text-color); border-left-color: #3b82a0; box-shadow: 0 2px 12px rgba(0,0,0,.28); }
         body.dark-mode .timeline-item:hover .timeline-content { border-left-color: var(--accent-color); }
-        body.dark-mode input { background-color: #11151e; color: var(--text-color); border-color: #2d3f55; }
+        body.dark-mode input,
+        body.dark-mode select { background-color: #11151e; color: var(--text-color); border-color: #2d3f55; }
         body.dark-mode .budget-summary { background-color: #181e28; }
         body.dark-mode .weather-card { background: linear-gradient(145deg, #142030, #1a2d42); }
         body.dark-mode .weather-city { color: #eaf2ff; }
@@ -925,11 +938,24 @@
     </div>
     
     <div class="budget-entry-row">
+        <input type="date" id="expenseDate">
+        <select id="expenseCategory">
+            <option value="餐飲">🍔 餐飲</option>
+            <option value="交通">🚇 交通</option>
+            <option value="住宿">🏨 住宿</option>
+            <option value="購物">🛍️ 購物</option>
+            <option value="景點">🎟️ 景點</option>
+            <option value="其他" selected>🪙 其他</option>
+        </select>
         <input type="text" id="expenseItem" placeholder="項目 (例: 買藥妝)" onkeydown="if(event.key==='Enter'){document.getElementById('expenseCost').focus();}">
         <input type="number" id="expenseCost" placeholder="金額" onkeydown="if(event.key==='Enter'){addExpense();}">
         <button onclick="addExpense()">新增</button>
     </div>
 
+    <div class="budget-list-header">
+        <span>📅 日期 / 🏷️ 分類 / 項目</span>
+        <span>金額</span>
+    </div>
     <ul id="expenseList" style="list-style: none; padding: 0; margin: 0;">
         <!-- 花費紀錄會產生在這裡 -->
     </ul>
@@ -3734,6 +3760,20 @@ document
     // === 記帳與預算功能 ===
     let expenses = JSON.parse(localStorage.getItem('travelExpenses') || '[]');
 
+    function getCategoryBadge(category) {
+        let bg = '#dfe6e9';
+        let fg = '#2d3436';
+        switch (category) {
+            case '餐飲': bg = '#ffeaa7'; fg = '#d63031'; break;
+            case '交通': bg = '#81ecec'; fg = '#0984e3'; break;
+            case '住宿': bg = '#74b9ff'; fg = '#0984e3'; break;
+            case '購物': bg = '#ff7675'; fg = '#d63031'; break;
+            case '景點': bg = '#55efc4'; fg = '#00b894'; break;
+            default: break;
+        }
+        return `<span class="category-badge" style="background-color: ${bg}; color: ${fg}; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-right: 8px;">${category || '其他'}</span>`;
+    }
+
     function updateBudgetUI() {
         const list = document.getElementById('expenseList');
         list.innerHTML = '';
@@ -3741,10 +3781,19 @@ document
 
         expenses.forEach((exp, index) => {
             totalSpent += parseInt(exp.cost);
+            const dateStr = exp.date ? `<span style="color: var(--muted-color); font-size: 0.85rem; margin-right: 8px; font-family: monospace;">${exp.date}</span>` : '';
+            const catBadge = getCategoryBadge(exp.category);
             list.innerHTML += `
-                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; padding: 8px 0;">
-                    <span>${exp.item}</span>
-                    <span>¥${exp.cost} <button onclick="deleteExpense(${index})" style="background:none; border:none; color:red; cursor:pointer;">✖</button></span>
+                <li style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(127,127,127,0.2); padding: 10px 0;">
+                    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                        ${dateStr}
+                        ${catBadge}
+                        <span style="font-weight: 500; color: var(--text-color);">${exp.item}</span>
+                    </div>
+                    <span style="font-weight: bold; color: var(--text-color); display: flex; align-items: center; gap: 8px;">
+                        ¥${parseInt(exp.cost).toLocaleString()}
+                        <button onclick="deleteExpense(${index})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.1rem; padding: 0 4px;" title="刪除">✖</button>
+                    </span>
                 </li>`;
         });
 
@@ -3760,10 +3809,12 @@ document
     }
 
     function addExpense() {
+        const date = document.getElementById('expenseDate').value;
+        const category = document.getElementById('expenseCategory').value;
         const item = document.getElementById('expenseItem').value;
         const cost = document.getElementById('expenseCost').value;
         if (item && cost) {
-            expenses.push({ item, cost });
+            expenses.push({ date, category, item, cost });
             document.getElementById('expenseItem').value = '';
             document.getElementById('expenseCost').value = '';
             updateBudgetUI();
@@ -3791,6 +3842,17 @@ document
         } else {
 		localStorage.setItem('travelTotalBudget', document.getElementById('totalBudget').value);
 		}
+        
+        // 設定記帳的預設日期為今天
+        const dateInput = document.getElementById('expenseDate');
+        if (dateInput) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            dateInput.value = `${yyyy}-${mm}-${dd}`;
+        }
+        
         updateBudgetUI(); // 載入記帳明細
         loadAllWeather(); // 載入即時天氣
     };
