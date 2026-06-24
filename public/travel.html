@@ -814,7 +814,17 @@
             outline: 3px solid rgba(46,124,196,.5);
             outline-offset: 2px;
         }
-    </style>
+    
+/* P1/P2 UX Upgrade */
+.accordion-toggle{width:100%;text-align:left;padding:12px 14px;border:none;border-radius:8px;background:#f3f4f6;cursor:pointer;font-weight:700;margin-top:10px}
+.accordion-content{display:none;padding-top:8px}
+.accordion-content.open{display:block}
+.mobile-quickbar{position:fixed;bottom:0;left:0;right:0;display:none;background:#fff;border-top:1px solid #ddd;z-index:1200}
+.mobile-quickbar a{flex:1;text-align:center;padding:10px;text-decoration:none}
+.today-highlight{background:#f7f8fa;border-radius:10px;padding:12px}
+@media(max-width:768px){.mobile-quickbar{display:flex} body{padding-bottom:60px}}
+
+</style>
 </head>
 <body>
 
@@ -869,7 +879,7 @@
         </div>
     </div>
 
-    <div id="todayPlanContent"></div>
+    <div id="todayPlanContent" class="today-highlight"></div>
 
     <div class="dashboard-actions">
         <a id="gotoDayBtn" class="action-btn">
@@ -3871,5 +3881,27 @@ document
     // 每 30 分鐘自動靜默刷新
     setInterval(loadAllWeather, 30 * 60 * 1000);
     </script>
+
+<div class="mobile-quickbar">
+<a href="#todayDashboard">🏠 今日</a>
+<a href="#weatherSection">☀️ 天氣</a>
+<a href="#day1">📅 行程</a>
+<a href="#expenseList">💰 預算</a>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.day-card .sub-section h3').forEach(h=>{
+   const sec=h.parentElement;
+   const content=document.createElement('div');
+   content.className='accordion-content';
+   while(h.nextSibling){content.appendChild(h.nextSibling);}
+   h.insertAdjacentElement('afterend',content);
+   h.classList.add('accordion-toggle');
+   if(['🚇 交通路線 (路程時間：約 1.5 小時)','📍 奈良推薦景點'].includes(h.textContent.trim())) content.classList.add('open');
+   h.onclick=()=>content.classList.toggle('open');
+ });
+});
+</script>
+
 </body>
 </html>
