@@ -837,6 +837,88 @@
 .today-highlight{background:#f7f8fa;border-radius:10px;padding:12px}
 @media(max-width:768px){.mobile-quickbar{display:flex} body{padding-bottom:60px}}
 
+/* ===== 預算表單依日期收合樣式 ===== */
+.budget-date-group {
+    margin-bottom: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--card-bg);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+body.dark-mode .budget-date-group {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+.budget-date-group:hover {
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+body.dark-mode .budget-date-group:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.budget-date-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+body.dark-mode .budget-date-header {
+    background: rgba(255, 255, 255, 0.02);
+}
+.budget-date-header:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+body.dark-mode .budget-date-header:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+.budget-date-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--text-color);
+}
+.budget-date-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.budget-date-subtotal {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+body.dark-mode .budget-date-subtotal {
+    color: #eaf2ff;
+}
+.budget-date-arrow {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.25s ease;
+    fill: currentColor;
+    color: var(--muted-color);
+}
+.budget-date-group.collapsed .budget-date-arrow {
+    transform: rotate(-90deg);
+}
+.budget-date-content {
+    list-style: none;
+    padding: 0 14px;
+    margin: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background: var(--card-bg);
+}
+body.dark-mode .budget-date-content {
+    border-top-color: rgba(255, 255, 255, 0.05);
+}
+.budget-date-group.collapsed .budget-date-content {
+    display: none;
+}
+
 </style>
 </head>
 <body>
@@ -3759,6 +3841,13 @@ document
 
     // === 記帳與預算功能 ===
     let expenses = JSON.parse(localStorage.getItem('travelExpenses') || '[]');
+    let collapsedBudgetDates = JSON.parse(localStorage.getItem('collapsedBudgetDates') || '{}');
+
+    function toggleBudgetDate(dateKey) {
+        collapsedBudgetDates[dateKey] = !collapsedBudgetDates[dateKey];
+        localStorage.setItem('collapsedBudgetDates', JSON.stringify(collapsedBudgetDates));
+        updateBudgetUI();
+    }
 
     function getCategoryBadge(category) {
         let bg = '#dfe6e9';
@@ -3779,22 +3868,75 @@ document
         list.innerHTML = '';
         let totalSpent = 0;
 
+        // Group expenses by date
+        const groups = {};
         expenses.forEach((exp, index) => {
-            totalSpent += parseInt(exp.cost);
-            const dateStr = exp.date ? `<span style="color: var(--muted-color); font-size: 0.85rem; margin-right: 8px; font-family: monospace;">${exp.date}</span>` : '';
-            const catBadge = getCategoryBadge(exp.category);
-            list.innerHTML += `
-                <li style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(127,127,127,0.2); padding: 10px 0;">
-                    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
-                        ${dateStr}
-                        ${catBadge}
-                        <span style="font-weight: 500; color: var(--text-color);">${exp.item}</span>
+            totalSpent += parseInt(exp.cost) || 0;
+            const dateKey = exp.date || '未指定日期';
+            if (!groups[dateKey]) {
+                groups[dateKey] = {
+                    expenses: [],
+                    total: 0
+                };
+            }
+            groups[dateKey].expenses.push({ ...exp, originalIndex: index });
+            groups[dateKey].total += parseInt(exp.cost) || 0;
+        });
+
+        // Sort dates chronologically (earliest first, non-dated expenses last)
+        const sortedDates = Object.keys(groups).sort((a, b) => {
+            if (a === '未指定日期') return 1;
+            if (b === '未指定日期') return -1;
+            return new Date(a) - new Date(b);
+        });
+
+        sortedDates.forEach((dateKey) => {
+            const group = groups[dateKey];
+            const isCollapsed = collapsedBudgetDates[dateKey] || false;
+
+            // Generate list items for this group
+            let itemsHtml = '';
+            group.expenses.forEach((exp) => {
+                const catBadge = getCategoryBadge(exp.category);
+                itemsHtml += `
+                    <li style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(127,127,127,0.15); padding: 10px 0;">
+                        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                            ${catBadge}
+                            <span style="font-weight: 500; color: var(--text-color);">${exp.item}</span>
+                        </div>
+                        <span style="font-weight: bold; color: var(--text-color); display: flex; align-items: center; gap: 8px;">
+                            ¥${parseInt(exp.cost).toLocaleString()}
+                            <button onclick="deleteExpense(${exp.originalIndex})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.1rem; padding: 0 4px;" title="刪除">✖</button>
+                        </span>
+                    </li>`;
+            });
+
+            // Arrow icon (SVG for smooth rotation)
+            const arrowSvg = `
+                <svg class="budget-date-arrow" viewBox="0 0 24 24" width="16" height="16">
+                    <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                </svg>
+            `;
+
+            // HTML for the date group
+            const groupHtml = `
+                <li class="budget-date-group ${isCollapsed ? 'collapsed' : ''}">
+                    <div class="budget-date-header" onclick="toggleBudgetDate('${dateKey}')">
+                        <div class="budget-date-title">
+                            <span>📅 ${dateKey}</span>
+                            <span style="font-size: 0.8rem; font-weight: normal; color: var(--muted-color);">(${group.expenses.length} 筆)</span>
+                        </div>
+                        <div class="budget-date-info">
+                            <span class="budget-date-subtotal">小計: ¥${group.total.toLocaleString()}</span>
+                            ${arrowSvg}
+                        </div>
                     </div>
-                    <span style="font-weight: bold; color: var(--text-color); display: flex; align-items: center; gap: 8px;">
-                        ¥${parseInt(exp.cost).toLocaleString()}
-                        <button onclick="deleteExpense(${index})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.1rem; padding: 0 4px;" title="刪除">✖</button>
-                    </span>
-                </li>`;
+                    <ul class="budget-date-content">
+                        ${itemsHtml}
+                    </ul>
+                </li>
+            `;
+            list.innerHTML += groupHtml;
         });
 
         const budgetInput = document.getElementById('totalBudget');
@@ -3805,7 +3947,7 @@ document
         // 如果透支，字體變紅色
         document.getElementById('remainingBudget').style.color = remaining < 0 ? '#e74c3c' : '#27ae60';
         localStorage.setItem('travelExpenses', JSON.stringify(expenses));
-		localStorage.setItem('traveltotalSpent', totalSpent);
+        localStorage.setItem('traveltotalSpent', totalSpent);
     }
 
     function addExpense() {
@@ -3817,6 +3959,12 @@ document
             expenses.push({ date, category, item, cost });
             document.getElementById('expenseItem').value = '';
             document.getElementById('expenseCost').value = '';
+            
+            // Ensure the added expense's date is expanded
+            const dateKey = date || '未指定日期';
+            collapsedBudgetDates[dateKey] = false;
+            localStorage.setItem('collapsedBudgetDates', JSON.stringify(collapsedBudgetDates));
+            
             updateBudgetUI();
         }
     }
