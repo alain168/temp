@@ -919,6 +919,42 @@ body.dark-mode .budget-date-content {
     display: none;
 }
 
+/* 補足行程打卡功能相關樣式 */
+.check-in-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+}
+.check-in-wrapper input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--nara-color);
+    cursor: pointer;
+}
+.check-in-wrapper.checked-item label, 
+.check-in-wrapper.checked-item a {
+    text-decoration: line-through;
+    color: var(--muted-color);
+    opacity: 0.7;
+}
+.dashboard-check-list {
+    margin-top: 8px;
+    padding-left: 0;
+    list-style: none;
+    border-top: 1px dashed rgba(0,0,0,0.1);
+    padding-top: 8px;
+}
+body.dark-mode .dashboard-check-list {
+    border-top-color: rgba(255,255,255,0.1);
+}
+.dashboard-check-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 4px;										  
+ }
 </style>
 </head>
 <body>
@@ -1213,7 +1249,7 @@ body.dark-mode .budget-date-content {
         }
 
         // ── 初始化 ────────────────────────────────────────
-        document.addEventListener('DOMContentLoaded', function() {
+        /*document.addEventListener('DOMContentLoaded', function() {
 		    const ds=document.getElementById('planDateSelector'); if(ds){ds.value=new Date().toISOString().split('T')[0];} initTodayPlan();
             // 插入進度條到 h3 後面
             const section = document.getElementById('checklist-section');
@@ -1445,7 +1481,7 @@ document
 	document
     .getElementById("mapBtn")
     .href = p.map;
-}
+}*/
         </script>
 
         <!-- 每日行程 -->
@@ -1460,15 +1496,15 @@ document
             <div class="sub-section">
                 <h3>🕒 機場抵達與出關說明</h3>
                 <ul>
-                    <li>約日本時間 14:00 (下午2點) 出關。</li>
-                    <li>第一航廈 JR 窗口兌換 JR PASS 實體票，並訂 HARUKA 指定席車票 (亦可至綠色售票機台兌換/劃位)。</li>
-                    <li>進行 SUICA 交通卡儲值。</li>
+				    <li><div class="check-in-wrapper" data-id="d1_out"><input type="checkbox" id="chk_d1_out"><label for="chk_d1_out">約日本時間 14:00 (下午2點) 出關。</div ></li>
+                    <li><div class="check-in-wrapper" data-id="d1_jr"><input type="checkbox" id="chk_d1_jr"><label for="chk_d1_jr">第一航廈 JR 窗口兌換 JR PASS 實體票，並訂 HARUKA 指定席車票 (亦可至綠色售票機台兌換/劃位)。</div ></li>
+                    <li><div class="check-in-wrapper" data-id="d1_suica"><input type="checkbox" id="chk_d1_suica"><label for="chk_d1_suica">進行 SUICA 交通卡儲值。</div ></li>
                 </ul>
             </div>
             <div class="sub-section">
                 <h3>🚇 交通路線 (路程時間：約 1.5 小時)</h3>
                 <ul>
-                    <li>中午到達出關後搭乘 <strong>JR 關空特急 HARUKA</strong> 或 <strong>JR 關空快速</strong> ➔ 至<a href="https://www.google.com/maps/search/?api=1&query=天王寺站" target="_blank">【天王寺站】</a> ➔ 轉乘 <strong>JR 大和路線</strong> 至<a href="https://www.google.com/maps/search/?api=1&query=JR奈良站" target="_blank">【JR 奈良站】</a>。</li>
+				    <li><div class="check-in-wrapper" data-id="d1_trans"><input type="checkbox" id="chk_d1_trans"><label for="chk_d1_trans">中午到達出關後搭乘 <strong>JR 關空特急 HARUKA</strong> 或 <strong>JR 關空快速</strong> ➔ 至<a href="https://www.google.com/maps/search/?api=1&query=天王寺站" target="_blank">【天王寺站】</a> ➔ 轉乘 <strong>JR 大和路線</strong> 至<a href="https://www.google.com/maps/search/?api=1&query=JR奈良站" target="_blank">【JR 奈良站】</a>。</div ></li>                    
                     <li><strong>JR 關空特急 HARUKA</strong> ➔ <a href="https://www.google.com/maps/search/?api=1&query=天王寺站" target="_blank">天王寺站</a>：票價 ¥2,350 (使用 JR PASS)。班次為 14:14、14:44、15:14 等每 30 分鐘一班。指定席班次若沒趕上，可直接搭乘下一班車的自由席。</li>
                     <li><strong>JR 關空快速</strong> ➔ <a href="https://www.google.com/maps/search/?api=1&query=天王寺站" target="_blank">天王寺站</a>：票價 ¥1,060 (使用 JR PASS)。</li>
                     <li><strong>JR 大和路線</strong>：自 <a href="https://www.google.com/maps/search/?api=1&query=天王寺站" target="_blank">天王寺站 (16 號月台)</a> ➔ <a href="https://www.google.com/maps/search/?api=1&query=JR奈良站" target="_blank">JR 奈良站</a>：票價 ¥510 (使用 JR PASS)。</li>
@@ -1477,14 +1513,21 @@ document
             <div class="sub-section">
                 <h3>📍 奈良推薦景點</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d1_todaiji"><input type="checkbox" id="chk_d1_todaiji"><label for="chk_d1_todaiji">參觀 <a href="https://www.google.com/maps/search/?api=1&query=東大寺" target="_blank">東大寺</a> (門票 ¥800)</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d1_park"><input type="checkbox" id="chk_d1_park"><label for="chk_d1_park">慢步 <a href="https://www.google.com/maps/search/?api=1&query=奈良公園" target="_blank">奈良公園</a> (看小鹿)</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d1_street"><input type="checkbox" id="chk_d1_street"><label for="chk_d1_street">逛 <a href="https://www.google.com/maps/search/?api=1&query=東向商店街" target="_blank">東向商店街</a> 與 <a href="https://www.google.com/maps/search/?api=1&query=三条通" target="_blank">三条通</a></label></div></li>					
                     <li><a href="https://www.google.com/maps/search/?api=1&query=東大寺" target="_blank">東大寺</a> (門票 ¥800)</li>
                     <li><a href="https://www.google.com/maps/search/?api=1&query=奈良公園" target="_blank">奈良公園</a> (於 JR 奈良站東口 2 號站台搭乘公車約 15 分鐘，於「東大寺大佛殿春日大社前」或「東大寺站」下車，單程票價：成人 ¥220，兒童 ¥110)</li>
                     <li><a href="https://www.google.com/maps/search/?api=1&query=東向商店街" target="_blank">東向商店街</a> (近鐵奈良站旁)、<a href="https://www.google.com/maps/search/?api=1&query=三条通" target="_blank">三条通</a></li>
-                </ul>
+                
+				</ul>
             </div>
             <div class="sub-section">
                 <h3>🍽️ 奈良美食</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d1_food1"><input type="checkbox" id="chk_d1_food1"><label for="chk_d1_food1">品嚐 <a href="https://www.google.com/maps/search/?api=1&query=釜飯志津香" target="_blank">釜飯 志津香</a></label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d1_food2"><input type="checkbox" id="chk_d1_food2"><label for="chk_d1_food2">朝聖 <a href="https://www.google.com/maps/search/?api=1&query=中谷堂" target="_blank">中谷堂 日式草仔粿</a></label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d1_food3"><input type="checkbox" id="chk_d1_food3"><label for="chk_d1_food3">購買 <a href="https://www.google.com/maps/search/?api=1&query=大佛布丁" target="_blank">大佛布丁</a>、柿葉壽司</label></div></li>
                     <li><a href="https://www.google.com/maps/search/?api=1&query=釜飯志津香" target="_blank">釜飯 志津香</a> (公園店 / 大宮店-三条通)</li>
                     <li><a href="https://www.google.com/maps/search/?api=1&query=中谷堂" target="_blank">中谷堂 日式草仔粿</a> (三条通)</li>
                     <li>近鐵奈良站周邊美食：<a href="https://www.google.com/maps/search/?api=1&query=大佛布丁" target="_blank">大佛布丁</a>、<a href="https://www.google.com/maps/search/?api=1&query=柿葉壽司" target="_blank">柿葉壽司</a>、<a href="https://www.google.com/maps/search/?api=1&query=箱夢" target="_blank">箱夢 (飯糰)</a></li>
@@ -1494,6 +1537,7 @@ document
             <div class="sub-section" style="border-left: 4px solid #27ae60; padding-left: 14px;">
                 <h3>🛍️ 附近品牌門市（On / Workman）</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d1_workman"><input type="checkbox" id="chk_d1_workman"><label for="chk_d1_workman">🟢 <a href="https://maps.google.com/?cid=346069038700785173" target="_blank">Workman 奈良今市町店</a></label></div></li>
                     <li>🟢 <strong><a href="https://maps.google.com/?cid=346069038700785173" target="_blank">Workman 奈良今市町店</a></strong>
                         <span class="badge" style="background:#27ae60; font-size:0.75rem;">⭐ 3.7</span>
                         <ul>
@@ -1502,6 +1546,7 @@ document
                             <li>💡 品項齊全：戶外服、女性系列、登山用品、機能鞋均有；是奈良縣評價最高的 Workman 門市。</li>
                         </ul>
                     </li>
+					<li><div class="check-in-wrapper" data-id="d1_on"><input type="checkbox" id="chk_d1_on"><label for="chk_d1_on">🟠 <a href="https://customer-service.on-running.com/ja-jp/dealers/on-by-hule" target="_blank">On by HULLE（天王寺あべの）</a></label></div></li>
                     <li>🟠 <strong><a href="https://customer-service.on-running.com/ja-jp/dealers/on-by-hule" target="_blank">On by HULLE（天王寺 あべのキューズモール 2F）</a></strong>
                         <span class="badge" style="background:#e67e22; font-size:0.75rem;">⭐ 3.2</span>
                         <ul>
@@ -1535,6 +1580,8 @@ document
             <div class="sub-section">
                 <h3>🚇 交通路線與車資</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d2_exchange"><input type="checkbox" id="chk_d2_exchange"><label for="chk_d2_exchange">持實體 JR PASS 兌換私鐵一日券（京都市營地下鐵/京阪電車）</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d2_train"><input type="checkbox" id="chk_d2_train"><label for="chk_d2_train">搭乘 JR 鐵路：奈良 ➔ 宇治 ➔ 伏見稻荷 ➔ 京都站</label></div></li>
                     <li><strong>JR 鐵路 (使用 JR PASS)：</strong>
                         <ul>
                             <li>奈良 ➔ 宇治：票價 ¥510，車程約 27 分鐘。</li>
@@ -1557,6 +1604,8 @@ document
             <div class="sub-section">
                 <h3>📍 觀光景點</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d2_uji"><input type="checkbox" id="chk_d2_uji"><label for="chk_d2_uji">漫遊宇治：參觀 <a href="https://www.google.com/maps/search/?api=1&query=平等院" target="_blank">平等院</a> (門票 ¥700) 與宇治川</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d2_inari"><input type="checkbox" id="chk_d2_inari"><label for="chk_d2_inari">參拜 <a href="https://www.google.com/maps/search/?api=1&query=伏見稻荷大社" target="_blank">伏見稻荷大社</a> (看千本鳥居)</label></div></li>
                     <li>宇治：<a href="https://www.google.com/maps/search/?api=1&query=平等院" target="_blank">平等院</a> (門票 ¥700)、宇治川周邊。</li>
                     <li><a href="https://www.google.com/maps/search/?api=1&query=伏見稻荷大社" target="_blank">伏見稻荷大社</a>：千本鳥居。</li>
                     <li><span class="badge" style="background-color: #7f8c8d;">備案 (看時間是否夠)</span> 嵐山行程：自京都站搭乘 JR ➔ <a href="https://www.google.com/maps/search/?api=1&query=嵯峨嵐山站" target="_blank">嵯峨嵐山站</a> (票價 ¥240，車程約 17 分鐘，使用 JR PASS)，遊覽 <a href="https://www.google.com/maps/search/?api=1&query=嵐山竹林小徑" target="_blank">竹林小徑</a>、<a href="https://www.google.com/maps/search/?api=1&query=渡月橋" target="_blank">渡月橋</a>，並在當地吃蕎麥麵。</li>
@@ -1564,11 +1613,16 @@ document
             </div>
             <div class="sub-section">
                 <h3>🍵 宇治抹茶推薦</h3>
+				 <ul>
+				   <li><div class="check-in-wrapper" data-id="d2_matcha"><input type="checkbox" id="chk_d2_matcha"><label for="chk_d2_matcha">品嚐 <a href="https://www.google.com/maps/search/?api=1&query=中村藤吉本店" target="_blank">中村藤吉本店</a> 或 伊藤久右衛門</label></div></li>
+				 </ul>
                 <p><a href="https://www.google.com/maps/search/?api=1&query=中村藤吉本店" target="_blank">中村藤吉本店</a> (需現場抽號碼牌)、<a href="https://www.google.com/maps/search/?api=1&query=伊藤久右衛門本店" target="_blank">伊藤久右衛門</a>、<a href="https://www.google.com/maps/search/?api=1&query=辻利" target="_blank">辻利</a></p>
             </div>
             <div class="sub-section">
                 <h3>🛍️ 京都購物與優惠（高島屋、大丸、藤井大丸）</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d2_shop1"><input type="checkbox" id="chk_d2_shop1"><label for="chk_d2_shop1">逛 <a href="https://www.google.com/maps/search/?api=1&query=京都高島屋" target="_blank">京都高島屋 S.C.</a> 領取 5% 折扣卡</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d2_shop2"><input type="checkbox" id="chk_d2_shop2"><label for="chk_d2_shop2">逛 <a href="https://www.google.com/maps/search/?api=1&query=大丸京都店" target="_blank">大丸京都店</a> 與 <a href="https://www.google.com/maps/search/?api=1&query=藤井大丸" target="_blank">藤井大丸</a> 採購伴手禮</label></div></li>
                     <li><strong><a href="https://www.google.com/maps/search/?api=1&query=京都高島屋" target="_blank">京都高島屋 S.C.</a>：</strong>憑護照至免稅櫃台可兌換一張 5% 購物折扣卡。</li>
                     <li><strong><a href="https://www.google.com/maps/search/?api=1&query=大丸京都店" target="_blank">大丸京都店</a>：</strong>結帳時出示護照與優惠券享有優惠折扣。</li>
                     <li><strong><a href="https://www.google.com/maps/search/?api=1&query=藤井大丸" target="_blank">藤井大丸</a></strong></li>
@@ -1585,6 +1639,9 @@ document
             <div class="sub-section">
                 <h3>🍽️ 餐飲與藥妝推薦</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d2_nishiki"><input type="checkbox" id="chk_d2_nishiki"><label for="chk_d2_nishiki">吃遍 <a href="https://www.google.com/maps/search/?api=1&query=錦市場" target="_blank">錦市場</a>、逛新京極通</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d2_drug"><input type="checkbox" id="chk_d2_drug"><label for="chk_d2_drug">於 <a href="https://www.google.com/maps/search/?api=1&query=新京極藥品" target="_blank">新京極藥品</a> 採購超便宜藥妝</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d2_dinner"><input type="checkbox" id="chk_d2_dinner"><label for="chk_d2_dinner">晚餐享用知名京都燒肉（如 弘商店、enen）或壽喜燒（三嶋亭）</label></div></li>
                     <li>景點：<a href="https://www.google.com/maps/search/?api=1&query=錦市場" target="_blank">錦市場</a> (高倉通起)、<a href="https://www.google.com/maps/search/?api=1&query=新京極通" target="_blank">新京極通</a>。</li>
                     <li>藥妝採購：<a href="https://www.google.com/maps/search/?api=1&query=新京極藥品" target="_blank">新京極藥品</a> (此店無退稅服務，但定價非常低，比其他藥妝店退稅後的價格還便宜！)。</li>
                     <li>燒肉推薦：<a href="https://www.google.com/maps/search/?api=1&query=燒肉弘商店烏丸錦" target="_blank">燒肉弘商店 烏丸錦</a>、<a href="https://www.google.com/maps/search/?api=1&query=京都燒肉enen" target="_blank">京都焼肉 enen</a>、<a href="https://www.google.com/maps/search/?api=1&query=燒肉名門天壇" target="_blank">燒肉名門 天壇</a>。</li>
@@ -1612,6 +1669,7 @@ document
                     <li>🟠 <strong><a href="https://maps.google.com/?cid=13906525293121182612" target="_blank">KISHISPO Kyoto Powered by On（藤井大丸 6F）</a></strong>
                         <span class="badge" style="background:#e67e22; font-size:0.75rem;">⭐ 4.3 強烈推薦</span>
                         <ul>
+						    <li><div class="check-in-wrapper" data-id="d2_on_store"><input type="checkbox" id="chk_d2_on_store"><label for="chk_d2_on_store">🟠 <a href="https://maps.google.com/?cid=13906525293121182612" target="_blank">KISHISPO Kyoto Powered by On（藤井大丸 6F）</a></label></div></li>
                             <li>📍 京都四条通 藤井大丸百貨 6F（與 4F HARBS 同棟，可一起安排）。</li>
                             <li>⏰ 11:00–20:00（全年無休）</li>
                             <li>💡 On 京都授權精品店，店員英文流利，大尺碼 US11–12 有貨，退稅辦理在 7F。</li>
@@ -1621,6 +1679,7 @@ document
                     <li>🟢 <strong><a href="https://maps.google.com/?cid=6497723564459926597" target="_blank">#WorkmanGirl AEON Mall KYOTO（3F）</a></strong>
                         <span class="badge" style="background:#27ae60; font-size:0.75rem;">⭐ 4.2</span>
                         <ul>
+						    <li><div class="check-in-wrapper" data-id="d2_workman_store"><input type="checkbox" id="chk_d2_workman_store"><label for="chk_d2_workman_store">🟢 <a href="https://maps.google.com/?cid=6497723564459926597" target="_blank">#WorkmanGirl AEON Mall KYOTO（3F）</a></label></div></li>
                             <li>📍 JR 京都站步行 5 分鐘，AEON Mall KYOTO 3F（可退稅）。</li>
                             <li>⏰ 10:00–21:00</li>
                             <li>💡 女性機能服飾齊全，有恢復穿著、防UV夾克等熱門商品，可退稅。</li>
@@ -1640,6 +1699,9 @@ document
             <div class="sub-section">
                 <h3>🚇 交通與散步路線</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d3_bus"><input type="checkbox" id="chk_d3_bus"><label for="chk_d3_bus">自四條站搭乘京都市營巴士 207 路線前往清水道站</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d3_kiyomizu"><input type="checkbox" id="chk_d3_kiyomizu"><label for="chk_d3_kiyomizu">參觀 <a href="https://www.google.com/maps/search/?api=1&query=清水寺" target="_blank">清水寺</a> ➔ 漫步三年坂 ➔ 二年坂</label></div></li>																																																																   
+                    <li><div class="check-in-wrapper" data-id="d3_gion"><input type="checkbox" id="chk_d3_gion"><label for="chk_d3_gion">步行前往 <a href="https://www.google.com/maps/search/?api=1&query=祇園白川" target="_blank">祇園白川</a> ➔ 探訪 <a href="https://www.google.com/maps/search/?api=1&query=花見小路" target="_blank">花見小路</a></label></div></li>
                     <li>搭車：自四條站搭乘京都市營巴士 207 路線 (車資 ¥230) 前往 <a href="https://www.google.com/maps/search/?api=1&query=清水寺" target="_blank">清水寺</a> (於清水道站下車，步行約 650 公尺，11 分鐘)。</li>
                     <li><strong>散步步行距離與時間預估：</strong>
                         <ul>
@@ -1655,6 +1717,9 @@ document
             <div class="sub-section" style="border-left: 4px solid #e67e22; padding-left: 14px;">
                 <h3>🍙 清水寺至花見小路沿途美食推薦（日式飯糰）</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d3_rice1"><input type="checkbox" id="chk_d3_rice1"><label for="chk_d3_rice1">🥇 白天必吃：<a href="https://www.google.com/maps/search/?api=1&query=京都ぎをんおむすび屋さんかく+東山区祇園町南側533" target="_blank">京都ぎをん おむすび屋 さんかく</a></label></div></li>
+					<li><div class="check-in-wrapper" data-id="d3_rice2"><input type="checkbox" id="chk_d3_rice2"><label for="chk_d3_rice2">🌙 宵夜限定：<a href="https://www.google.com/maps/search/?api=1&query=米々庵+祇園+花見小路" target="_blank">米々庵（まいまいあん）</a></label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d3_snack"><input type="checkbox" id="chk_d3_snack"><label for="chk_d3_snack">🛖 品嚐沿途小吃：藤菜美醬油丸子、月下美人巨無霸糰子</label></div></li>
                     <li>
                         <strong>🥇 主推【日式飯糰】<a href="https://www.google.com/maps/search/?api=1&query=京都ぎをんおむすび屋さんかく+東山区祇園町南側533" target="_blank">京都ぎをん おむすび屋 さんかく</a></strong>
                         <span class="badge" style="background:#e67e22; font-size:0.75rem;">白天必吃</span>
@@ -1691,6 +1756,9 @@ document
             <div class="sub-section">
                 <h3>🛍️ 百貨焦點與美食推薦</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d3_nintendo"><input type="checkbox" id="chk_d3_nintendo"><label for="chk_d3_nintendo">衝高島屋 7F <a href="https://www.google.com/maps/search/?api=1&query=Nintendo+KYOTO" target="_blank">Nintendo KYOTO</a> 與 5F 寶可夢中心</label></div></li>
+					<li><div class="check-in-wrapper" data-id="d3_harbs"><input type="checkbox" id="chk_d3_harbs"><label for="chk_d3_harbs">吃藤井大丸 4F <a href="https://www.google.com/maps/search/?api=1&query=HARBS藤井大丸" target="_blank">HARBS 水果千層蛋糕</a></label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d3_depot"><input type="checkbox" id="chk_d3_depot"><label for="chk_d3_depot">大丸京都店 B1F 地庫食品館買齊阿闍梨餅、茶之菓</label></div></li>
                     <li><strong><a href="https://www.google.com/maps/search/?api=1&query=京都高島屋" target="_blank">京都高島屋 S.C.</a> (距離四條站約 700 公尺，步行 10 分鐘)：</strong>
                         <ul>
                             <li><strong>7F：</strong><a href="https://www.google.com/maps/search/?api=1&query=Nintendo+KYOTO" target="_blank">Nintendo KYOTO</a> (任天堂京都直營旗謎店)。</li>
@@ -1741,6 +1809,7 @@ document
             <div class="sub-section">
                 <h3>🚇 京都 ➔ 大阪 ➔ 民宿交通</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d4_move"><input type="checkbox" id="chk_d4_move"><label for="chk_d4_move">搭乘 JR 新快速至大阪站，轉環狀線至西九條站民宿寄放行李</label></div></li>
                     <li>四條站 ➔ 京都站：票價 ¥220。</li>
                     <li>京都站 ➔ 大阪站 (使用 JR PASS)：可搭乘「JR 新快速」列車，車程約 29 分鐘，票價 ¥580；或搭乘特急列車，車程約 27 分鐘，基本車資與特急券費用共計 ¥1,670。</li>
                     <li>大阪站 ➔ 西九條站 (使用 JR PASS)：於 JR 大阪站 (1 號月台) 搭乘「JR 大阪環狀線」往西九條方向列車 ➔ 至<a href="https://www.google.com/maps/search/?api=1&query=西九條站" target="_blank">【西九條站】</a> (車程約 4 分鐘，票價 ¥180)。出站後步行約 1 分鐘即可到達民宿。</li>
@@ -1749,6 +1818,7 @@ document
             <div class="sub-section">
                 <h3>🚇 天神橋筋七夕祭行程與行李寄物</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d4_tanabata"><input type="checkbox" id="chk_d4_tanabata"><label for="chk_d4_tanabata">前往 <a href="https://www.google.com/maps/search/?api=1&query=天神橋筋商店街" target="_blank">天神橋筋商店街</a> 並參與 <a href="https://www.google.com/maps/search/?api=1&query=大阪天滿宮" target="_blank">大阪天滿宮七夕祭</a></label></div></li>
                     <li><strong>交通路線：</strong>自 JR 大阪站 (7, 8 號月台) 搭乘「JR 大阪環狀線 2 號月台」列車，約 2 分鐘抵達 <a href="https://www.google.com/maps/search/?api=1&query=JR天滿站" target="_blank">【JR 天滿站】</a>。</li>
                     <li><strong>JR 天滿站大行李寄物櫃位置：</strong>
                         <ul>
@@ -1768,6 +1838,12 @@ document
                 <h3>🛍️ 梅田商圈大激戰與百貨導覽 (依地理最順路順序)</h3>
                 <p style="color: #7f8c8d; font-size: 0.9rem;">💡 提示：出發前可至 <a href="https://umeda-sc.jp/en/coupons/" target="_blank">梅田商圈優惠券官網</a> 下載折扣條碼。</p>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d4_grand"><input type="checkbox" id="chk_d4_grand"><label for="chk_d4_grand">1️⃣ 逛 <a href="https://www.google.com/maps/search/?api=1&query=GRAND+GREEN+OSAKA" target="_blank">GRAND GREEN</a> (Patagonia) 與 GRAND FRONT (無印良品)</label></div></li>
+					<li><div class="check-in-wrapper" data-id="d4_lucua"><input type="checkbox" id="chk_d4_lucua"><label for="chk_d4_lucua">2️⃣ 逛 <a href="https://www.google.com/maps/search/?api=1&query=LUCUA+Osaka" target="_blank">LUCUA / LUCUA 1100</a> 潮流服飾與美食街</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d4_hankyu"><input type="checkbox" id="chk_d4_hankyu"><label for="chk_d4_hankyu">3️⃣ 逛 <a href="https://www.google.com/maps/search/?api=1&query=阪急百貨梅田本店" target="_blank">阪急百貨梅田本店</a> 買海外限定伴手禮，朝聖 8F <b>On 直營店</b></label></div></li>
+					<li><div class="check-in-wrapper" data-id="d4_sanban"><input type="checkbox" id="chk_d4_sanban"><label for="chk_d4_sanban">4️⃣ 逛 <a href="https://www.google.com/maps/search/?api=1&query=阪急三番街" target="_blank">阪急三番街</a> (動漫天堂、吉伊卡哇店)</label></div></li>
+					<li><div class="check-in-wrapper" data-id="d4_links"><input type="checkbox" id="chk_d4_links"><label for="chk_d4_links">5️⃣ 逛 <a href="https://www.google.com/maps/search/?api=1&query=LINKS+UMEDA" target="_blank">LINKS UMEDA</a> (UNIQLO全球旗艦店、6F <b>ART SPORTS</b> 跑鞋店)</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d4_hanshin"><input type="checkbox" id="chk_d4_hanshin"><label for="chk_d4_hanshin">6️⃣ 逛 <a href="https://www.google.com/maps/search/?api=1&query=阪神百貨梅田本店" target="_blank">阪神百貨梅田本店</a> 買阪神虎周邊、吃魷魚燒</label></div></li>
                     <li><strong>1️⃣ <a href="https://www.google.com/maps/search/?api=1&query=GRAND+GREEN+OSAKA" target="_blank">GRAND GREEN OSAKA</a> & <a href="https://www.google.com/maps/search/?api=1&query=GRAND+FRONT+OSAKA" target="_blank">GRAND FRONT OSAKA</a>：</strong>
                         <ul>
                             <li><strong>GRAND GREEN OSAKA：</strong>憑護照至北館 1 樓服務台可領取 500 日圓優惠券 (滿 3,000 日圓含稅以上可使用，每次限使用 1 張)。內有極具規模的 <a href="https://www.google.com/maps/search/?api=1&query=Patagonia關西旗艦店" target="_blank">Patagonia 關西旗艦店</a>。</li>
@@ -1829,6 +1905,8 @@ document
             <div class="sub-section">
                 <h3>⚠️ 注意事項與安檢說明</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d5_hotel"><input type="checkbox" id="chk_d5_hotel"><label for="chk_d5_hotel">早上前往環球影城東方飯店寄放行李</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d5_usj"><input type="checkbox" id="chk_d5_usj"><label for="chk_d5_usj">暢玩 <a href="https://www.google.com/maps/search/?api=1&query=日本環球影城" target="_blank">日本環球影城 (USJ)</a> 一整天！</label></div></li>
                     <li>暢玩 <a href="https://www.google.com/maps/search/?api=1&query=日本環球影城" target="_blank">日本環球影城 (USJ)</a> 一整天！</li>
                     <li><strong>安檢規範：</strong>樂園入園安檢非常嚴格，每人僅能攜帶一瓶塑膠瓶裝水。糖果、餅乾、麵包與飯糰等輕食，放行需碰運氣 (建議包裝放包包底層)。</li>
                 </ul>
@@ -1847,6 +1925,7 @@ document
             <div class="sub-section">
                 <h3>🚇 交通與每日行程安排建議</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d6_ship"><input type="checkbox" id="chk_d6_ship"><label for="chk_d6_ship">自環球碼頭搭乘「船長線 (Captain Line)」前往海遊館碼頭</label></div></li>
                     <li><strong>船長線 (Captain Line) 乘船：</strong>自環球碼頭搭乘船長線前往海遊館碼頭 (單程票價 ¥900，持周遊卡可免費兌換船票)。
                         <ul>
                             <li>上午推薦船班時間：09:45、10:15、10:45 (一趟約 10 分鐘)。</li>
@@ -1859,6 +1938,8 @@ document
             <div class="sub-section">
                 <h3>⚓ 上午：港灣天保山區與海遊館</h3>
                 <ul>
+				     <li><div class="check-in-wrapper" data-id="d6_kaiyukan"><input type="checkbox" id="chk_d6_kaiyukan"><label for="chk_d6_kaiyukan">參觀 <a href="https://www.google.com/maps/search/?api=1&query=大阪海遊館" target="_blank">大阪海遊館</a>（驚嘆超大鯨鯊）</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d6_ferris"><input type="checkbox" id="chk_d6_ferris"><label for="chk_d6_ferris">免費搭乘 <a href="https://www.google.com/maps/search/?api=1&query=天保山大摩天輪" target="_blank">天保山大摩天輪</a></label></div></li>
                     <li>參觀 <a href="https://www.google.com/maps/search/?api=1&query=大阪海遊館" target="_blank">大阪海遊館</a> (需事先上網預訂門票，館內備有投幣行李寄放處)。</li>
                     <li><strong>天保山遊樂區與購物中心：</strong>憑海遊館門票票根可在購物中心店家享有購物或餐飲折扣。</li>
                     <li><strong>大阪周遊卡免費景點：</strong>
@@ -1957,6 +2038,8 @@ document
                 <ul>
                     <li><strong>鄰近難波站與心齋橋站周邊：</strong>
                         <ul>
+						    <li><div class="check-in-wrapper" data-id="d7_shinsaibashi"><input type="checkbox" id="chk_d7_shinsaibashi"><label for="chk_d7_shinsaibashi">激戰購物：心齋橋筋商店街、難波商圈</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d7_glico"><input type="checkbox" id="chk_d7_glico"><label for="chk_d7_glico">打卡勝地：與道頓堀跑跑人固力果標誌拍照</label></div></li>
                             <li><a href="https://www.google.com/maps/search/?api=1&query=心齋橋筋商店街" target="_blank">心齋橋筋商店街</a> (美國村)。</li>
                             <li><a href="https://www.google.com/maps/search/?api=1&query=道頓堀" target="_blank">道頓堀</a> (固力果跑跑人霓虹招牌)。</li>
                             <li><a href="https://www.google.com/maps/search/?api=1&query=法善寺橫丁" target="_blank">法善寺橫丁</a>。</li>
@@ -2021,6 +2104,9 @@ document
             <div class="sub-section">
                 <h3>🐟 上午：木津市場朝市體驗</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d8_market"><input type="checkbox" id="chk_d8_market"><label for="chk_d8_market">大飽口福：早起衝「木津批發市場」享用極上海鮮丼、水果</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d8_outlet"><input type="checkbox" id="chk_d8_outlet"><label for="chk_d8_outlet">最後血拼：搭南海電鐵至臨空城 Rinku Premium Outlets</label></div></li>
+                    <li><div class="check-in-wrapper" data-id="d8_airport"><input type="checkbox" id="chk_d8_airport"><label for="chk_d8_airport">返台班機：前進關西機場搭乘虎航 IT 213 回家</label></div></li>
                     <li>早晨排定去 <a href="https://www.google.com/maps/search/?api=1&query=木津卸売市場" target="_blank">木津地方批發市場</a> 體驗朝市活動！</li>
                     <li><strong>木津市場必吃人氣排隊名店：</strong>
                         <ol>
@@ -3822,22 +3908,186 @@ document
     })();
 	
 	// === 行程打卡功能 ===
-    function saveTasks() {
-        const checkboxes = document.querySelectorAll('.check-in-box');
-        const tasks = {};
-        checkboxes.forEach(box => {
-            tasks[box.id] = box.checked;
-        });
-        localStorage.setItem('travelTasks', JSON.stringify(tasks));
+    // ── 🆕 新增：行程核心打卡與智慧聯動邏輯 ──────────────────────────
+    const INTINERARY_CHECKIN_KEY = 'travel_itinerary_checkin_2026';
+															   							   
+    // 核心數據：用於渲染今日看板與計算打卡進度
+    const plansData = {
+        1: { dayId:"day1", title:"Day 1 關西機場 ➔ 奈良", hotel:"大和魯內奈良天然溫泉酒店", ticket:"JR PASS Day 1", mission:"東大寺、奈良公園看鹿、買大佛布丁", budget:8000, map:"https://maps.google.com/?q=Nara+Park", items: ["d1_out", "d1_jr", "d1_suica", "d1_trans", "d1_todaiji", "d1_park", "d1_street", "d1_food1", "d1_food2", "d1_food3", "d1_workman", "d1_on"] },
+        2: { dayId:"day2", title:"Day 2 奈良 ➔ 宇治 ➔ 京都", hotel:"相鐵FRESA京都", ticket:"JR PASS Day 2", mission:"宇治平等院、伏見稻荷大社、錦市場", budget:10000, map:"https://maps.google.com/?q=Fushimi+Inari", items: ["d2_exchange", "d2_train", "d2_uji", "d2_inari", "d2_matcha", "d2_shop1", "d2_shop2", "d2_nishiki", "d2_drug", "d2_dinner", "d2_on_store", "d2_workman_store"] },
+        3: { dayId:"day3", title:"Day 3 京都經典一日遊", hotel:"相鐵FRESA京都", ticket:"巴士/地下鐵自費", mission:"清水寺、三年坂、祇園、任天堂旗艦店", budget:12000, map:"https://maps.google.com/?q=Kiyomizu-dera", items: ["d3_bus", "d3_kiyomizu", "d3_gion", "d3_rice1", "d3_rice2", "d3_snack", "d3_nintendo", "d3_harbs", "d3_depot"] },
+        4: { dayId:"day4", title:"Day 4 京都 ➔ 大阪梅田購物", hotel:"Ocean西九条 (民宿)", ticket:"JR PASS Day 4", mission:"天神橋筋七夕祭、梅田各大百貨激戰", budget:15000, map:"https://maps.google.com/?q=Umeda", items: ["d4_move", "d4_tanabata", "d4_grand", "d4_lucua", "d4_hankyu", "d4_sanban", "d4_links", "d4_hanshin"] },
+        5: { dayId:"day5", title:"Day 5 日本環球影城 (USJ)", hotel:"環球影城東方飯店", ticket:"USJ門票", mission:"暢玩環球影城一整天", budget:15000, map:"https://maps.google.com/?q=Universal+Studios+Japan", items: ["d5_hotel", "d5_usj"] },
+        6: { dayId:"day6", title:"Day 6 大阪港灣 ➔ 大阪城", hotel:"APA難波大國町", ticket:"大阪周遊卡二日券-1", mission:"乘船長線、海遊館、天保山大摩天輪", budget:8000, map:"https://maps.google.com/?q=Kaiyukan", items: ["d6_ship", "d6_kaiyukan", "d6_ferris"] },
+        7: { dayId:"day7", title:"Day 7 難波/心齋橋/道頓堀", hotel:"APA難波大國町", ticket:"大阪周遊卡二日券-2", mission:"心齋橋血拼、與固力果跑跑人合影", budget:10000, map:"https://maps.google.com/?q=Dotonbori", items: ["d7_shinsaibashi", "d7_glico"] },
+        8: { dayId:"day8", title:"Day 8 木津市場 ➔ 返台", hotel:"溫暖的家", ticket:"南海電鐵", mission:"木津市場海鮮丼、Rinku Outlet、搭機", budget:20000, map:"https://maps.google.com/?q=Kansai+Airport", items: ["d8_market", "d8_outlet", "d8_airport"] }
+    };
+	
+	 function loadItineraryCheckin() {
+        try {
+            return JSON.parse(localStorage.getItem(INTINERARY_CHECKIN_KEY)) || {};
+        } catch(e) { return {}; }								  														   
     }
 
-    function loadTasks() {
-        const savedTasks = JSON.parse(localStorage.getItem('travelTasks') || '{}');
-        for (const [id, isChecked] of Object.entries(savedTasks)) {
-            const box = document.getElementById(id);
-            if (box) box.checked = isChecked;
-        }
+    function saveItineraryCheckin(statusMap) {
+        localStorage.setItem(INTINERARY_CHECKIN_KEY, JSON.stringify(statusMap));													   
     }
+     // 初始化頁面中所有的 Checkbox 打卡監聽器
+    function initItineraryCheckboxes() {
+        const statusMap = loadItineraryCheckin();
+        
+        document.querySelectorAll('.check-in-wrapper').forEach(wrapper => {
+            const itemId = wrapper.getAttribute('data-id');
+            const checkbox = wrapper.querySelector('input[type="checkbox"]');
+            
+            if (itemId && checkbox) {
+                // 回填儲存狀態
+                if (statusMap[itemId]) {
+                    checkbox.checked = true;
+                    wrapper.classList.add('checked-item');
+                }
+                
+                // 綁定點擊事件
+                checkbox.addEventListener('change', function() {
+                    const currentStatus = loadItineraryCheckin();
+                    if (this.checked) {
+                        currentStatus[itemId] = true;
+                        wrapper.classList.add('checked-item');
+                    } else {
+                        delete currentStatus[itemId];
+                        wrapper.classList.remove('checked-item');
+                    }
+                    saveItineraryCheckin(currentStatus);
+                    
+                    // 即時更新今日看板的進度
+                    updateSelectedPlan();
+                });
+            }
+        });
+    }
+	
+	 // 儀表板看板渲染邏輯
+    function initTodayPlan(selectedDate) {
+        const startDate = new Date('2026-07-04');
+        const today = selectedDate ? new Date(selectedDate) : new Date();
+        const diff = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        const container = document.getElementById('todayPlanContent');
+        if (!container) return;
+
+        if (diff < 1) {
+            container.innerHTML = `<div style="font-size:1.2rem;font-weight:bold;">✈️ 尚未出發</div><div>倒數中，準備前往關西！</div>`;
+            return;
+        }
+        if (diff > 8) {
+            container.innerHTML = `<div style="font-size:1.2rem;font-weight:bold;">🎉 旅程已結束</div><div>歡迎回台灣！期待下一次的出發。</div>`;
+            return;				   
+        }
+																																																						   
+        const p = plansData[diff];
+        const totalBudget = parseInt(localStorage.getItem('travelTotalBudget')) || 0;
+        const totalSpent  = parseInt(localStorage.getItem('traveltotalSpent'))  || 0;
+        const budgetLeft  = totalBudget - totalSpent;
+        const budgetColor = budgetLeft < 0 ? '#e74c3c' : '#27ae60';
+
+        // 🆕 計算今日行程打卡進度
+        const statusMap = loadItineraryCheckin();
+        let dayDoneCount = 0;
+        let checkListHtml = '';
+														 
+        p.items.forEach(id => {
+            const isDone = !!statusMap[id];
+            if (isDone) dayDoneCount++;
+            
+            // 嘗試從主頁獲取該打卡項目的中文說明
+            const originWrapper = document.querySelector(`.check-in-wrapper[data-id="${id}"]`);
+            let labelText = originWrapper ? originWrapper.querySelector('label').textContent : "未知任務";
+            
+            checkListHtml += `
+                <li class="dashboard-check-item">
+                    <input type="checkbox" data-dash-id="${id}" ${isDone ? 'checked' : ''} onchange="syncDashboardCheck('${id}', this.checked)">
+                    <span style="${isDone ? 'text-decoration:line-through; color:var(--muted-color); opacity:0.7;' : ''}">${labelText}</span>
+                </li>`;
+        });
+
+        const pct = Math.round((dayDoneCount / p.items.length) * 100) || 0;
+
+        container.innerHTML = `
+            <div class="today-title">${p.title}</div>
+            <div style="font-size:0.85rem; color:var(--nara-color); font-weight:bold; margin-bottom:10px;">
+                🎯 今日打卡進度：${dayDoneCount} / ${p.items.length} (${pct}%)
+                <div style="background:#eee; border-radius:4px; height:6px; margin-top:4px; overflow:hidden; width:100%;">
+                    <div style="background:var(--nara-color); height:100%; transition:width 0.2s; width:${pct}%;"></div>
+                </div>
+            </div>
+		  
+            <div class="today-grid">
+                <div>🏨 住宿</div><div>${p.hotel}</div>
+                <div>🎫 票券</div><div>${p.ticket}</div>
+                <div>🎯 任務</div><div>${p.mission}</div>
+                <div>💰 今日預算</div><div>¥${p.budget.toLocaleString()}</div>
+                <div>剩餘旅程</div><div>${8 - diff} 天</div>
+                <div>累計支出</div><div>¥${totalSpent > 0 ? totalSpent.toLocaleString() : '—'}</div>
+                <div>剩餘預算</div><div style="color:${budgetColor};font-weight:bold;">¥${totalBudget > 0 ? budgetLeft.toLocaleString() : '—'}</div>
+            </div>
+
+            <ul class="dashboard-check-list">
+                <strong>📍 今日打卡清單：</strong>
+                ${checkListHtml}
+            </ul>`;
+			
+        document.getElementById("gotoDayBtn").href = "#" + p.dayId;
+        document.getElementById("weatherBtn").onclick = function(e){
+            e.preventDefault();
+            document.getElementById("weatherSection").scrollIntoView({ behavior:"smooth" });
+        };
+        document.getElementById("mapBtn").href = p.map;
+    }
+
+    // 當在頂部今日儀表板直接勾選任務時，連動下方主清單並儲存狀態
+    function syncDashboardCheck(itemId, isChecked) {
+        const currentStatus = loadItineraryCheckin();
+        const mainCheckbox = document.querySelector(`.check-in-wrapper[data-id="${itemId}"] input[type="checkbox"]`);
+        const mainWrapper = document.querySelector(`.check-in-wrapper[data-id="${itemId}"]`);
+									   
+        if (isChecked) {
+            currentStatus[itemId] = true;
+            if(mainCheckbox) mainCheckbox.checked = true;
+            if(mainWrapper) mainWrapper.classList.add('checked-item');
+        } else {
+            delete currentStatus[itemId];
+            if(mainCheckbox) mainCheckbox.checked = false;
+            if(mainWrapper) mainWrapper.classList.remove('checked-item');										
+        }
+        
+        saveItineraryCheckin(currentStatus);
+        updateSelectedPlan();
+    }
+
+    function resetToToday() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById("planDateSelector").value = today;
+        initTodayPlan(today);								  
+    }
+
+    function updateSelectedPlan(){									  
+        initTodayPlan(document.getElementById("planDateSelector")?.value);																 
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const picker = document.getElementById("planDateSelector");
+        if (picker) {
+            picker.addEventListener('change', function () {
+                initTodayPlan(this.value);
+            });
+            picker.value = new Date().toISOString().split('T')[0];
+        }
+        
+        // 優先初始化主行程打卡系統
+        initItineraryCheckboxes();
+        // 再更新渲染今日看板
+        updateSelectedPlan();
+    });		   
+	
 
     // === 記帳與預算功能 ===
     let expenses = JSON.parse(localStorage.getItem('travelExpenses') || '[]');
@@ -3981,8 +4231,7 @@ document
 
     // === 網頁載入時初始化 ===
     window.onload = function() {
-        loadTasks(); // 載入打卡進度
-        
+               
         // 載入預算設定
         const savedBudget = localStorage.getItem('travelTotalBudget');
         if (savedBudget) {
