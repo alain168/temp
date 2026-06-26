@@ -54,6 +54,7 @@
             width: 240px;
             background: linear-gradient(175deg, #141f2d 0%, #0e1720 100%);
             height: 100vh;
+            height: 100dvh;
             position: fixed;
             top: 0;
             left: 0;
@@ -671,7 +672,10 @@
                 transition: max-height 0.3s ease-out;
                 background-color: #0d151e;
             }
-            .nav-links-wrapper.open { max-height: 70vh; }
+            .nav-links-wrapper.open {
+                max-height: 70vh;
+                max-height: 70dvh;
+            }
             .sidebar a {
                 padding: 11px 20px;
                 border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -688,7 +692,10 @@
             .countdown-bar { flex-direction: column; text-align: center; gap: 6px; padding: 14px 16px; }
             .countdown-bar .trip-dates { text-align: center; }
             .day-card { padding: 16px; border-radius: 10px; }
-            .map-container { height: 50vh; }
+            .map-container {
+                height: 50vh;
+                height: 50dvh;
+            }
             
             .weather-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .weather-card { padding: 12px 8px; }
@@ -832,10 +839,10 @@
 .accordion-toggle{width:100%;text-align:left;padding:12px 14px;border:none;border-radius:8px;background:#f3f4f6;cursor:pointer;font-weight:700;margin-top:10px}
 .accordion-content{display:none;padding-top:8px}
 .accordion-content.open{display:block}
-.mobile-quickbar{position:fixed;bottom:0;left:0;right:0;display:none;background:#fff;border-top:1px solid #ddd;z-index:1200}
+.mobile-quickbar{position:fixed;bottom:0;left:0;right:0;display:none;background:#fff;border-top:1px solid #ddd;z-index:1200;padding-bottom:env(safe-area-inset-bottom)}
 .mobile-quickbar a{flex:1;text-align:center;padding:10px;text-decoration:none}
 .today-highlight{background:#f7f8fa;border-radius:10px;padding:12px}
-@media(max-width:768px){.mobile-quickbar{display:flex} body{padding-bottom:60px}}
+@media(max-width:768px){.mobile-quickbar{display:flex} body{padding-bottom:calc(60px + env(safe-area-inset-bottom))}}
 
 /* ===== 預算表單依日期收合樣式 ===== */
 .budget-date-group {
@@ -1124,6 +1131,18 @@ body.dark-mode .dashboard-check-list {
 
         <script>
         // ── 清單資料定義 ──────────────────────────────────
+        function todayYmd() {
+            const d = new Date();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${d.getFullYear()}-${mm}-${dd}`;
+        }
+
+        function parseLocalDate(ymd) {
+            const parts = ymd.split('-').map(Number);
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+        }
+
         const CHECKLIST_KEY = 'travel_checklist_2026';
         const DEFAULT_ITEMS = [
             { id: 'usj',       label: 'USJ 門票',                               done: true  },
@@ -1250,7 +1269,7 @@ body.dark-mode .dashboard-check-list {
 
         // ── 初始化 ────────────────────────────────────────
         /*document.addEventListener('DOMContentLoaded', function() {
-		    const ds=document.getElementById('planDateSelector'); if(ds){ds.value=new Date().toISOString().split('T')[0];} initTodayPlan();
+		    const ds=document.getElementById('planDateSelector'); if(ds){ds.value=todayYmd();} initTodayPlan();
             // 插入進度條到 h3 後面
             const section = document.getElementById('checklist-section');
             const h3 = section.querySelector('h3');
@@ -1272,7 +1291,7 @@ body.dark-mode .dashboard-check-list {
 function resetToToday() {
 
     const today =
-        new Date().toISOString().split('T')[0];
+        todayYmd();
 
     document.getElementById("planDateSelector").value =
         today;
@@ -1292,7 +1311,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         picker.value =
-            new Date().toISOString().split('T')[0];
+            todayYmd();
     }
 });
 
@@ -1384,8 +1403,8 @@ function initTodayPlan(selectedDate) {
     }
 };
 
-    const startDate = new Date('2026-07-04');
-    const today = selectedDate ? new Date(selectedDate) : new Date();
+    const startDate = parseLocalDate('2026-07-04');
+    const today = selectedDate ? parseLocalDate(selectedDate) : parseLocalDate(todayYmd());
 
     const diff =
         Math.floor(
@@ -3750,7 +3769,7 @@ document
     (function initBackToTop() {
         const btn = document.getElementById('backToTop');
         window.addEventListener('scroll', function() {
-            if (window.scrollY > 350) {
+            if ((window.pageYOffset || document.documentElement.scrollTop) > 350) {
                 btn.classList.add('visible');
             } else {
                 btn.classList.remove('visible');
@@ -3799,19 +3818,19 @@ document
 
     /* ===== 4b. 日程卡片時間狀態高亮 ===== */
     (function markDayCardStates() {
-        const TRIP_START = new Date('2026-07-04');
+        const TRIP_START = parseLocalDate('2026-07-04');
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
         const dayMap = {
-            'day1': new Date('2026-07-04'),
-            'day2': new Date('2026-07-05'),
-            'day3': new Date('2026-07-06'),
-            'day4': new Date('2026-07-07'),
-            'day5': new Date('2026-07-08'),
-            'day6': new Date('2026-07-09'),
-            'day7': new Date('2026-07-10'),
-            'day8': new Date('2026-07-11'),
+            'day1': parseLocalDate('2026-07-04'),
+            'day2': parseLocalDate('2026-07-05'),
+            'day3': parseLocalDate('2026-07-06'),
+            'day4': parseLocalDate('2026-07-07'),
+            'day5': parseLocalDate('2026-07-08'),
+            'day6': parseLocalDate('2026-07-09'),
+            'day7': parseLocalDate('2026-07-10'),
+            'day8': parseLocalDate('2026-07-11'),
         };
 
         Object.entries(dayMap).forEach(function([id, date]) {
@@ -3968,8 +3987,8 @@ document
 	
 	 // 儀表板看板渲染邏輯
     function initTodayPlan(selectedDate) {
-        const startDate = new Date('2026-07-04');
-        const today = selectedDate ? new Date(selectedDate) : new Date();
+        const startDate = parseLocalDate('2026-07-04');
+        const today = selectedDate ? parseLocalDate(selectedDate) : parseLocalDate(todayYmd());
         const diff = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
         const container = document.getElementById('todayPlanContent');
         if (!container) return;
@@ -4064,7 +4083,7 @@ document
     }
 
     function resetToToday() {
-        const today = new Date().toISOString().split('T')[0];
+        const today = todayYmd();
         document.getElementById("planDateSelector").value = today;
         initTodayPlan(today);								  
     }
@@ -4079,7 +4098,7 @@ document
             picker.addEventListener('change', function () {
                 initTodayPlan(this.value);
             });
-            picker.value = new Date().toISOString().split('T')[0];
+            picker.value = todayYmd();
         }
         
         // 優先初始化主行程打卡系統
