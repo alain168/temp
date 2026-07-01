@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>京阪奈建議行程表-20260624版修正</title>
+    <title>京阪奈建議行程表-20260701版修正</title>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap');
 
@@ -962,6 +962,57 @@ body.dark-mode .dashboard-check-list {
     font-size: 0.85rem;
     margin-bottom: 4px;										  
  }
+ 
+ /* ===== 超市與便利商店必買清單專用樣式 ===== */
+.store-checklist-card {
+    background-color: rgba(39, 174, 96, 0.05);
+    border-left: 4px solid #27ae60;
+    padding: 16px 20px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: 28px;
+}
+body.dark-mode .store-checklist-card {
+    background-color: rgba(39, 174, 96, 0.1);
+}
+.store-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+}
+.store-box {
+    background: var(--card-bg);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+body.dark-mode .store-box {
+    border-color: rgba(255,255,255,0.08);
+}
+.store-box h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+    padding-bottom: 6px;
+    font-size: 0.95rem;
+}
+body.dark-mode .store-box h4 {
+    color: #eaf2ff;
+}
+.store-item-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+.store-item-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.88rem;
+}
 </style>
 </head>
 <body>
@@ -1128,6 +1179,85 @@ body.dark-mode .dashboard-check-list {
                 <input type="file" id="importFile" accept=".json,.txt" style="display:none" onchange="importChecklist(event)">
             </div>
         </div>
+		
+		        <!-- 🏪 日本四大超商與超市必買清單 checklist 區塊 -->
+        <div class="store-checklist-card">
+            <h3>🏪 日本在地超商與超市熱門商品踩點清單</h3>
+            <p style="font-size:0.85rem; color:#888; margin-bottom: 10px;">💡 狀態將儲存於本地瀏覽器中，可在旅途中隨手勾選打卡。</p>
+            
+            <div class="store-grid">
+                <!-- 7-Eleven -->
+                <div class="store-box">
+                    <h4>## 7-Eleven / 7-11</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_7_1"><label for="store_7_1">砂糖奶油樹夾心餅乾</label></li>
+                        <li><input type="checkbox" id="store_7_2"><label for="store_7_2">焦糖堅果夾心餅乾</label></li>
+                        <li><input type="checkbox" id="store_7_3"><label for="store_7_3">白巧克力夾心餅乾</label></li>
+                        <li><input type="checkbox" id="store_7_4"><label for="store_7_4">巧克力脆片</label></li>
+                        <li><input type="checkbox" id="store_7_5"><label for="store_7_5">一口草莓千層酥</label></li>
+                        <li><input type="checkbox" id="store_7_6"><label for="store_7_6">葡萄夾心餅乾</label></li>
+                        <li><input type="checkbox" id="store_7_7"><label for="store_7_7">海苔仙貝</label></li>
+                        <li><input type="checkbox" id="store_7_8"><label for="store_7_8">蒙古湯麵中本杯麵</label></li>
+                        <li><input type="checkbox" id="store_7_9"><label for="store_7_9">7-11 冰沙 (Smoothie)</label></li>
+                    </ul>
+                </div>
+
+                <!-- FamilyMart -->
+                <div class="store-box">
+                    <h4>## FamilyMart / 全家</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_fm_1"><label for="store_fm_1">全家炸雞 (FamiChiki)</label></li>
+                        <li><input type="checkbox" id="store_fm_2"><label for="store_fm_2">舒芙蕾布丁</label></li>
+                        <li><input type="checkbox" id="store_fm_3"><label for="store_fm_3">牧場牛乳冰淇淋</label></li>
+                        <li><input type="checkbox" id="store_fm_4"><label for="store_fm_4">濃郁起司塔</label></li>
+                        <li><input type="checkbox" id="store_fm_5"><label for="store_fm_5">年輪蛋糕</label></li>
+                        <li><input type="checkbox" id="store_fm_6"><label for="store_fm_6">全家限定冰沙 (FamiFrappe)</label></li>
+                    </ul>
+                </div>
+
+                <!-- Lawson -->
+                <div class="store-box">
+                    <h4>## Lawson / 羅森</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_lw_1"><label for="store_lw_1">生乳捲 (Premium Roll Cake)</label></li>
+                        <li><input type="checkbox" id="store_lw_2"><label for="store_lw_2">炸雞塊 (Karaage-kun)</label></li>
+                        <li><input type="checkbox" id="store_lw_3"><label for="store_lw_3">麻糬口感蛋糕捲</label></li>
+                        <li><input type="checkbox" id="store_lw_4"><label for="store_lw_4">巴斯克起司蛋糕</label></li>
+                        <li><input type="checkbox" id="store_lw_5"><label for="store_lw_5">可麗餅系列</label></li>
+                        <li><input type="checkbox" id="store_lw_6"><label for="store_lw_6">Uchi Café 各式甜點</label></li>
+                    </ul>
+                </div>
+
+                <!-- MUJI -->
+                <div class="store-box">
+                    <h4>## MUJI / 無印良品</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_mj_1"><label for="store_mj_1">草莓白巧克力</label></li>
+                        <li><input type="checkbox" id="store_mj_2"><label for="store_mj_2">宇治抹茶草莓巧克力</label></li>
+                        <li><input type="checkbox" id="store_mj_3"><label for="store_mj_3">年輪蛋糕系列 (一口尺寸)</label></li>
+                        <li><input type="checkbox" id="store_mj_4"><label for="store_mj_4">即食咖哩調理包</label></li>
+                        <li><input type="checkbox" id="store_mj_5"><label for="store_mj_5">懷舊棉花糖</label></li>
+                        <li><input type="checkbox" id="store_mj_6"><label for="store_mj_6">無印良品旅行保養品</label></li>
+                    </ul>
+                </div>
+
+                <!-- 日本各大便利商店與超市 -->
+                <div class="store-box" style="grid-column: span 1 / -1;">
+                    <h4>## 日本各大便利商店與超市 (廣泛販售)</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_all_1"><label for="store_all_1">Kirin 午後紅茶</label></li>
+                        <li><input type="checkbox" id="store_all_2"><label for="store_all_2">明治美味牛乳 (明治美味しい牛乳)</label></li>
+                        <li><input type="checkbox" id="store_all_3"><label for="store_all_3">Yakult Y1000 (養樂多)</label></li>
+                        <li><input type="checkbox" id="store_all_4"><label for="store_all_4">い・ろ・は・す もも (LOHAS 水蜜桃水)</label></li>
+                        <li><input type="checkbox" id="store_all_5"><label for="store_all_5">MINTIA BREEZE 薄荷糖</label></li>
+                        <li><input type="checkbox" id="store_all_6"><label for="store_all_6">アイスの実 (果實冰球)</label></li>
+                        <li><input type="checkbox" id="store_all_7"><label for="store_all_7">OHAYO 烤布丁 (焼プリン)</label></li>
+                        <li><input type="checkbox" id="store_all_8"><label for="store_all_8">日清兵衛油豆腐烏龍麵 (Donbei)</label></li>
+                        <li><input type="checkbox" id="store_all_9"><label for="store_all_9">Pino 巧克力冰磚</label></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
         <script>
         // ── 清單資料定義 ──────────────────────────────────
@@ -1178,6 +1308,34 @@ body.dark-mode .dashboard-check-list {
             const map = {};
             items.forEach(i => { map[i.id] = i.done; });
             localStorage.setItem(CHECKLIST_KEY, JSON.stringify(map));
+        }
+		
+		 // 超市必買清單的自動本地儲存機制
+        function initStoreChecklist() {
+            const checkboxes = document.querySelectorAll('.store-item-list input[type="checkbox"]');
+            let savedData = JSON.parse(localStorage.getItem(STORE_CHECKLIST_KEY)) || {};
+            
+            checkboxes.forEach(cb => {
+                // 恢復歷史勾選狀態
+                if (savedData[cb.id]) {
+                    cb.checked = true;
+                    cb.nextElementSibling.style.textDecoration = 'line-through';
+                    cb.nextElementSibling.style.color = '#aaa';
+                }
+                
+                // 綁定點擊事件
+                cb.addEventListener('change', function() {
+                    savedData[this.id] = this.checked;
+                    localStorage.setItem(STORE_CHECKLIST_KEY, JSON.stringify(savedData));
+                    if (this.checked) {
+                        this.nextElementSibling.style.textDecoration = 'line-through';
+                        this.nextElementSibling.style.color = '#aaa';
+                    } else {
+                        this.nextElementSibling.style.textDecoration = 'none';
+                        this.nextElementSibling.style.color = '';
+                    }
+                });
+            });
         }
 
         // ── 渲染清單 ─────────────────────────────────────
@@ -4407,6 +4565,8 @@ document
         initItineraryCheckboxes();
         // 再更新渲染今日看板
         updateSelectedPlan();
+		
+		initStoreChecklist();
     });		   
 	
 
