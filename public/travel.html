@@ -1450,7 +1450,9 @@ body.dark-mode .store-box h4 {
             { id: 'keihan',    label: '京阪電車京都觀光一日券',                  done: false },
             { id: 'hankyu',    label: '阪急電鐵一日券',                          done: false },
             { id: 'insurance', label: '投保旅平險',                              done: false },
-            { id: 'raincoat',  label: '準備簡易雨衣（環球影城玩水用）',          done: false }
+            { id: 'raincoat',  label: '準備簡易雨衣（環球影城玩水用）',          done: false },
+			{ id: 'umbrella',  label: '準備雨傘',          done: false },
+			{ id: 'passport',  label: '護照',          done: false }
         ];
 
         // ── 讀取 / 寫入 ───────────────────────────────────
@@ -1590,240 +1592,6 @@ body.dark-mode .store-box h4 {
             renderChecklist();
         }
 
-        // ── 初始化 ────────────────────────────────────────
-        /*document.addEventListener('DOMContentLoaded', function() {
-		    const ds=document.getElementById('planDateSelector'); if(ds){ds.value=todayYmd();} initTodayPlan();
-            // 插入進度條到 h3 後面
-            const section = document.getElementById('checklist-section');
-            const h3 = section.querySelector('h3');
-            const barWrapper = document.createElement('div');
-            barWrapper.style.cssText = 'background:#eee; border-radius:6px; height:10px; margin:8px 0 4px; overflow:hidden;';
-            const bar = document.createElement('div');
-            bar.id = 'checklist-progress';
-            bar.style.cssText = 'height:100%; background:#27ae60; transition:width 0.3s; width:0%';
-            barWrapper.appendChild(bar);
-            const pctTxt = document.createElement('p');
-            pctTxt.id = 'checklist-pct';
-            pctTxt.style.cssText = 'font-size:0.8rem; color:#666; margin:0 0 8px;';
-            h3.after(pctTxt);
-            h3.after(barWrapper);
-            renderChecklist();
-        });
-		
-		
-function resetToToday() {
-
-    const today =
-        todayYmd();
-
-    document.getElementById("planDateSelector").value =
-        today;
-
-    initTodayPlan(today);
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    const picker =
-        document.getElementById("planDateSelector");
-
-    if (picker) {
-
-        picker.addEventListener('change', function () {
-            initTodayPlan(this.value);
-        });
-
-        picker.value =
-            todayYmd();
-    }
-});
-
-function updateSelectedPlan(){
-    initTodayPlan(document.getElementById("planDateSelector")?.value);
-}
-
-function initTodayPlan(selectedDate) {
-
-   const plans = {
-    1:{
-        dayId:"day1",
-        title:"Day 1 奈良",
-        hotel:"大和魯內奈良天然溫泉酒店",
-        ticket:"JR PASS Day 1",
-        mission:"奈良公園、東大寺、商店街",
-        budget:8000,
-        map:"https://maps.google.com/?q=Nara+Park"
-    },
-
-    2:{
-        dayId:"day2",
-        title:"Day 2 京都",
-        hotel:"相鐵FRESA京都",
-        ticket:"JR PASS Day 2",
-        mission:"宇治、伏見稻荷",
-        budget:10000,
-        map:"https://maps.google.com/?q=Fushimi+Inari"
-    },
-
-    3:{
-        dayId:"day3",
-        title:"Day 3 京都",
-        hotel:"相鐵FRESA京都",
-        ticket:"JR PASS Day 3",
-        mission:"清水寺、祇園、河原町",
-        budget:12000,
-        map:"https://maps.google.com/?q=Kiyomizu-dera"
-    },
-
-    4:{
-        dayId:"day4",
-        title:"Day 4 梅田",
-        hotel:"APA難波大國町",
-        ticket:"JR PASS Day 4",
-        mission:"梅田百貨購物",
-        budget:15000,
-        map:"https://maps.google.com/?q=Umeda"
-    },
-
-    5:{
-        dayId:"day5",
-        title:"Day 5 USJ",
-        hotel:"APA難波大國町",
-        ticket:"USJ門票",
-        mission:"環球影城",
-        budget:15000,
-        map:"https://maps.google.com/?q=Universal+Studios+Japan"
-    },
-
-    6:{
-        dayId:"day6",
-        title:"Day 6 港灣區",
-        hotel:"APA難波大國町",
-        ticket:"大阪周遊卡",
-        mission:"海遊館、大阪城",
-        budget:8000,
-        map:"https://maps.google.com/?q=Kaiyukan"
-    },
-
-    7:{
-        dayId:"day7",
-        title:"Day 7 難波",
-        hotel:"APA難波大國町",
-        ticket:"大阪周遊卡",
-        mission:"心齋橋、道頓堀",
-        budget:10000,
-        map:"https://maps.google.com/?q=Dotonbori"
-    },
-
-    8:{
-        dayId:"day8",
-        title:"Day 8 回台",
-        hotel:"退房",
-        ticket:"南海電鐵",
-        mission:"Outlet → 關西機場",
-        budget:20000,
-        map:"https://maps.google.com/?q=Kansai+Airport"
-    }
-};
-
-    const startDate = parseLocalDate('2026-07-04');
-    const today = selectedDate ? parseLocalDate(selectedDate) : parseLocalDate(todayYmd());
-
-    const diff =
-        Math.floor(
-            (today - startDate)
-            / (1000 * 60 * 60 * 24)
-        ) + 1;
-
-    const container =
-        document.getElementById('todayPlanContent');
-
-    if (!container) return;
-
-    if (diff < 1) {
-
-        container.innerHTML = `
-            <div style="font-size:1.2rem;font-weight:bold;">
-                ✈️ 尚未出發
-            </div>
-            <div>
-                倒數中，準備前往關西！
-            </div>
-        `;
-
-        return;
-    }
-
-    if (diff > 8) {
-
-        container.innerHTML = `
-            <div style="font-size:1.2rem;font-weight:bold;">
-                🎉 旅程已結束
-            </div>
-            <div>
-                歡迎回台灣
-            </div>
-        `;
-
-        return;
-    }
-
-    const p = plans[diff];
-
-    const totalBudget = parseInt(localStorage.getItem('travelTotalBudget')) || 0;
-    const totalSpent  = parseInt(localStorage.getItem('traveltotalSpent'))  || 0;
-    const budgetLeft  = totalBudget - totalSpent;
-    const budgetColor = budgetLeft < 0 ? '#e74c3c' : '#27ae60';
-
-    container.innerHTML = `
-    <div class="today-title">
-        ${p.title}
-    </div>
-
-    <div class="today-grid">
-
-        <div>🏨 住宿</div>
-        <div>${p.hotel}</div>
-
-        <div>🎫 票券</div>
-        <div>${p.ticket}</div>
-
-        <div>🎯 任務</div>
-        <div>${p.mission}</div>
-
-        <div>💰 今日預算</div>
-        <div>¥${p.budget.toLocaleString()}</div>
-
-        <div>剩餘旅程</div>
-        <div>${8 - diff} 天</div>
-
-        <div>累計支出</div>
-        <div>¥${totalSpent > 0 ? totalSpent.toLocaleString() : '—'}</div>
-
-        <div>剩餘預算</div>
-        <div style="color:${budgetColor};font-weight:bold;">¥${totalBudget > 0 ? budgetLeft.toLocaleString() : '—'}</div>
-       </div>
-`;
-document
-    .getElementById("gotoDayBtn")
-    .href = "#" + p.dayId;
-	
-	document
-    .getElementById("weatherBtn")
-    .onclick = function(e){
-        e.preventDefault();
-
-        document
-            .getElementById("weatherSection")
-            .scrollIntoView({
-                behavior:"smooth"
-            });
-    };
-	
-	document
-    .getElementById("mapBtn")
-    .href = p.map;
-}*/
         </script>
 
         <!-- 每日行程 -->
@@ -1838,6 +1606,7 @@ document
             <div class="sub-section">
                 <h3>🕒 機場抵達與出關說明</h3>
                 <ul>
+				    <li><div class="check-in-wrapper" data-id="d1_esim"><input type="checkbox" id="chk_d1_esim"><label for="chk_d1_esim">啟用esim(開啟漫遊)。</div ></li>
 				    <li><div class="check-in-wrapper" data-id="d1_out"><input type="checkbox" id="chk_d1_out"><label for="chk_d1_out">約日本時間 14:00 (下午2點) 出關。</div ></li>
                     <li><div class="check-in-wrapper" data-id="d1_jr"><input type="checkbox" id="chk_d1_jr"><label for="chk_d1_jr">第一航廈 JR 窗口兌換 JR PASS 實體票，並訂 HARUKA 指定席車票 (亦可至綠色售票機台兌換/劃位)。</div ></li>
                     <li><div class="check-in-wrapper" data-id="d1_suica"><input type="checkbox" id="chk_d1_suica"><label for="chk_d1_suica">進行 SUICA 交通卡儲值。</div ></li>
@@ -3500,7 +3269,7 @@ document
 <tr>
 <td><strong>大阪周遊卡 (2日券)</strong></td>
 <td><strong>7/9 ～ 7/10</strong></td>
-<td><strong>超高 CP 值核心！</strong> 包含：船長線船票、天保山大摩天輪、聖瑪麗亞號、大阪城天守閣與御座船、道頓堀觀光船、通天閣展望台。</td>
+<td><strong>超高 CP 值核心！</strong> 包含：船長線船票、天保山大摩天輪、聖瑪麗亞號、大阪城天守閣與御座船、道頓堀觀光船、通天閣展望台。已全面電子票化，需透過手機使用。</td>
 </tr>
 <tr>
 <td><strong>SUICA 儲值卡</strong></td>
@@ -3512,6 +3281,15 @@ document
 <blockquote>
 <p>⚠️ <strong>行程小提醒：</strong> 7/5 筆記中提到了多種地鐵與私鐵一日券，因當天主線為「奈良→宇治→稻荷→京都」，使用 <strong>JR Pass</strong> 已能全面覆蓋。除非臨時大幅變更去嵐山或大改線，否則當天不需額外購買京都市營地鐵或阪急一日券。</p>
 </blockquote>
+<h3>🎫 大阪周遊卡 使用教學（2026 電子票版）</h3>
+<ul>
+<li><p><strong>啟用方式：</strong> 開啟 KLOOK／KKday 或官網寄送的電子票券連結，登入 <strong>SURUTTO QRtto</strong> 會員系統，於當天要搭車或入場當下點選「<strong>開始使用</strong>」，即視為啟用（一旦點擊即無法再分票或退款）。</p></li>
+<li><p><strong>一天的定義：</strong> 從<strong>凌晨 03:00 至次日凌晨 02:59</strong> 視為一天，務必在當天 03:00 之後才點選開始使用；若在 00:00～02:59 之間開通，過了 03:00 仍會自動失效，等於少用一段時間。7/9、7/10 兩天須<strong>連續使用</strong>，不可分開日期。</p></li>
+<li><p><strong>搭乘地鐵／私鐵：</strong> 進出站時將手機畫面上的 QR Code 對準閘口感應器即可通行；若車站閘口沒有掃碼功能，需向站務員口頭申告並出示畫面驗票。可搭乘 Osaka Metro 全線、阪急、阪神、京阪、近鐵、南海（指定區間），<strong>不含 JR 路線</strong>與往返關西機場交通。</p></li>
+<li><p><strong>搭乘巴士：</strong> 上車時先掃描車內 QR Code，下車時再向司機出示驗證畫面確認。</p></li>
+<li><p><strong>景點免費入場：</strong> 到櫃檯出示對應 QR Code 即可，每處設施每日限用一次，但一天內可使用的免費設施總數沒有上限（例如可以同一天內用掉大阪城天守閣＋御座船＋通天閣三個名額）。船長線（往返 USJ／海遊館碼頭）與大阪城御座船、道頓堀觀光船等熱門船班建議<strong>一到現場先去售票窗口兌換指定班次船票</strong>，以免晚上時段被換完。</p></li>
+<li><p><strong>使用前提醒：</strong> 使用時手機需保持連網狀態（不接受截圖畫面），建議先確認電量充足，並在瀏覽器（Safari／Chrome）啟用相機權限以便掃碼。</p></li>
+</ul>
 <h2>🛍️ 購物與行李寄放戰略</h2>
 <h3>1. 百貨與免稅優惠</h3>
 <ul>
@@ -4573,7 +4351,7 @@ document
 															   							   
     // 核心數據：用於渲染今日看板與計算打卡進度
     const plansData = {
-        1: { dayId:"day1", title:"Day 1 關西機場 ➔ 奈良", hotel:"大和魯內奈良天然溫泉酒店", ticket:"JR PASS Day 1", mission:"東大寺、奈良公園看鹿、買大佛布丁", budget:8000, map:"https://maps.google.com/?q=Nara+Park", items: ["d1_out", "d1_jr", "d1_suica", "d1_trans", "d1_todaiji", "d1_park", "d1_street", "d1_food1", "d1_food2", "d1_food3", "d1_workman", "d1_on","d1_3coins","d1_sundi"] },
+        1: { dayId:"day1", title:"Day 1 關西機場 ➔ 奈良", hotel:"大和魯內奈良天然溫泉酒店", ticket:"JR PASS Day 1", mission:"東大寺、奈良公園看鹿、買大佛布丁", budget:8000, map:"https://maps.google.com/?q=Nara+Park", items: ["d1_out", "d1_jr", "d1_suica", "d1_trans", "d1_todaiji", "d1_park", "d1_street", "d1_food1", "d1_food2", "d1_food3", "d1_workman", "d1_on","d1_3coins","d1_sundi","d1_esim"] },
         2: { dayId:"day2", title:"Day 2 奈良 ➔ 宇治 ➔ 京都", hotel:"相鐵FRESA京都", ticket:"JR PASS Day 2", mission:"宇治平等院、伏見稻荷大社、錦市場", budget:10000, map:"https://maps.google.com/?q=Fushimi+Inari", items: ["d2_exchange", "d2_train", "d2_uji", "d2_inari", "d2_matcha", "d2_shop1", "d2_shop2", "d2_nishiki", "d2_drug", "d2_dinner", "d2_on_store", "d2_workman_store","d2_3coins","d2_3coins_2","d2_sundi"] },
         3: { dayId:"day3", title:"Day 3 京都經典一日遊", hotel:"相鐵FRESA京都", ticket:"巴士/地下鐵自費", mission:"清水寺、三年坂、祇園、任天堂旗艦店", budget:12000, map:"https://maps.google.com/?q=Kiyomizu-dera", items: ["d3_bus", "d3_kiyomizu", "d3_gion", "d3_rice1", "d3_rice2", "d3_snack", "d3_nintendo", "d3_harbs", "d3_depot","d3_3coins","d3_sundi"] },
         4: { dayId:"day4", title:"Day 4 京都 ➔ 大阪梅田購物", hotel:"Ocean西九条 (民宿)", ticket:"JR PASS Day 4", mission:"天神橋筋七夕祭、梅田各大百貨激戰", budget:15000, map:"https://maps.google.com/?q=Umeda", items: ["d4_move", "d4_tanabata", "d4_grand", "d4_lucua", "d4_hankyu", "d4_sanban", "d4_links", "d4_hanshin","d4_3coins_1","d4_3coins_2","d4_3coins_3","d4_sundi"] },
