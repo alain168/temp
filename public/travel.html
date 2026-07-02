@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>京阪奈建議行程表-20260701版修正</title>
+    <title>京阪奈建議行程表-20260702版修正</title>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap');
 
@@ -1030,6 +1030,7 @@ body.dark-mode .store-box h4 {
         <span class="nav-group-label">行前準備</span>
         <a href="#prep" data-section="prep">✈️ 預購與航班</a>
         <a href="#flight-items" data-section="flight-items">🧳 行李攜帶須知</a>
+		<a href="#fooditemchecklist" data-section="fooditemchecklist">🏪 日本在地超商與超市熱門商品踩點清單</a>
         <span class="nav-group-label">每日行程</span>
         <a href="#day1" data-section="day1">7/4 (六) 關西機場→奈良</a>
         <a href="#day2" data-section="day2">7/5 (日) 宇治/伏見稻荷→京都</a>
@@ -1180,25 +1181,22 @@ body.dark-mode .store-box h4 {
             </div>
         </div>
 		
-		        <!-- 🏪 日本四大超商與超市必買清單 checklist 區塊 -->
-        <div class="store-checklist-card">
+		        <!-- 🏪 日本超商與超市必買清單 checklist 區塊（已依 products_by_store.md 踩點紀錄校正/補足） -->
+        <div class="store-checklist-card" id="fooditemchecklist">
             <h3>🏪 日本在地超商與超市熱門商品踩點清單</h3>
-            <p style="font-size:0.85rem; color:#888; margin-bottom: 10px;">💡 狀態將儲存於本地瀏覽器中，可在旅途中隨手勾選打卡。</p>
+            <p style="font-size:0.85rem; color:#888; margin-bottom: 10px;">💡 狀態將儲存於本地瀏覽器中，可在旅途中隨手勾選打卡。以下品項已依實際拍照紀錄（products_by_store.md）校正，<span style="color:#e74c3c;">紅字</span>為停產/季節限定/區域限定等提醒。</p>
             
             <div class="store-grid">
                 <!-- 7-Eleven -->
                 <div class="store-box">
                     <h4>## 7-Eleven / 7-11</h4>
                     <ul class="store-item-list">
-                        <li><input type="checkbox" id="store_7_1"><label for="store_7_1">砂糖奶油樹夾心餅乾</label></li>
-                        <li><input type="checkbox" id="store_7_2"><label for="store_7_2">焦糖堅果夾心餅乾</label></li>
-                        <li><input type="checkbox" id="store_7_3"><label for="store_7_3">白巧克力夾心餅乾</label></li>
-                        <li><input type="checkbox" id="store_7_4"><label for="store_7_4">巧克力脆片</label></li>
-                        <li><input type="checkbox" id="store_7_5"><label for="store_7_5">一口草莓千層酥</label></li>
-                        <li><input type="checkbox" id="store_7_6"><label for="store_7_6">葡萄夾心餅乾</label></li>
-                        <li><input type="checkbox" id="store_7_7"><label for="store_7_7">海苔仙貝</label></li>
-                        <li><input type="checkbox" id="store_7_8"><label for="store_7_8">蒙古湯麵中本杯麵</label></li>
-                        <li><input type="checkbox" id="store_7_9"><label for="store_7_9">7-11 冰沙 (Smoothie)</label></li>
+                        <li><input type="checkbox" id="store_7_1"><label for="store_7_1">生火腿起司捲 (生ハムチーズ巻き)</label></li>
+                        <li><input type="checkbox" id="store_7_2"><label for="store_7_2">油漬生火腿起司 (生ハムとチーズのオイル漬け)</label></li>
+                        <li><input type="checkbox" id="store_7_3"><label for="store_7_3">焦糖馬卡龍冰淇淋 (Caramel Macaron Ice Cream)</label></li>
+                        <li><input type="checkbox" id="store_7_4"><label for="store_7_4">滑順口感鱈魚起司條 (なめらかな食感のチーズ鱈)</label></li>
+                        <li><input type="checkbox" id="store_7_5"><label for="store_7_5">青蘋果風味軟糖 (まるで青りんごグミ)</label></li>
+                        <li><input type="checkbox" id="store_7_6"><label for="store_7_6">蘋果風味軟糖 (まるでりんごグミ)</label></li>
                     </ul>
                 </div>
 
@@ -1206,12 +1204,14 @@ body.dark-mode .store-box h4 {
                 <div class="store-box">
                     <h4>## FamilyMart / 全家</h4>
                     <ul class="store-item-list">
-                        <li><input type="checkbox" id="store_fm_1"><label for="store_fm_1">全家炸雞 (FamiChiki)</label></li>
-                        <li><input type="checkbox" id="store_fm_2"><label for="store_fm_2">舒芙蕾布丁</label></li>
-                        <li><input type="checkbox" id="store_fm_3"><label for="store_fm_3">牧場牛乳冰淇淋</label></li>
-                        <li><input type="checkbox" id="store_fm_4"><label for="store_fm_4">濃郁起司塔</label></li>
-                        <li><input type="checkbox" id="store_fm_5"><label for="store_fm_5">年輪蛋糕</label></li>
-                        <li><input type="checkbox" id="store_fm_6"><label for="store_fm_6">全家限定冰沙 (FamiFrappe)</label></li>
+                        <li><input type="checkbox" id="store_fm_1"><label for="store_fm_1">濃郁巧克力磅蛋糕 (濃厚チョコパウンド)</label></li>
+                        <li><input type="checkbox" id="store_fm_2"><label for="store_fm_2">費南雪 (こだわりのフィナンシェ)</label></li>
+                        <li><input type="checkbox" id="store_fm_3"><label for="store_fm_3">開心果草莓磅蛋糕 (ピスタチオといちごのパウンドケーキ)</label></li>
+                        <li><input type="checkbox" id="store_fm_4"><label for="store_fm_4">肉桂香氣巧克力餅乾 (シナモン香るショコラクッキー)</label></li>
+                        <li><input type="checkbox" id="store_fm_5"><label for="store_fm_5">貓舌脆餅・白色戀人風 (ラングドシャ)</label></li>
+                        <li><input type="checkbox" id="store_fm_6"><label for="store_fm_6">Biang Biang Noodles (𦙡𦙡麵)</label></li>
+                        <li><input type="checkbox" id="store_fm_7"><label for="store_fm_7">細切褐藻絲 (細切りめかぶ)</label></li>
+                        <li><input type="checkbox" id="store_fm_8"><label for="store_fm_8">FAMIMA CAFÉ 冰拿鐵</label></li>
                     </ul>
                 </div>
 
@@ -1219,12 +1219,28 @@ body.dark-mode .store-box h4 {
                 <div class="store-box">
                     <h4>## Lawson / 羅森</h4>
                     <ul class="store-item-list">
-                        <li><input type="checkbox" id="store_lw_1"><label for="store_lw_1">生乳捲 (Premium Roll Cake)</label></li>
-                        <li><input type="checkbox" id="store_lw_2"><label for="store_lw_2">炸雞塊 (Karaage-kun)</label></li>
-                        <li><input type="checkbox" id="store_lw_3"><label for="store_lw_3">麻糬口感蛋糕捲</label></li>
+                        <li><input type="checkbox" id="store_lw_1"><label for="store_lw_1">蔥鹽牛舌乾 (ねぎタン塩)</label></li>
+                        <li><input type="checkbox" id="store_lw_2"><label for="store_lw_2">炸雞君 (Karaage-kun)</label></li>
+                        <li><input type="checkbox" id="store_lw_3"><label for="store_lw_3">Uchi Café 生乳捲</label></li>
                         <li><input type="checkbox" id="store_lw_4"><label for="store_lw_4">巴斯克起司蛋糕</label></li>
-                        <li><input type="checkbox" id="store_lw_5"><label for="store_lw_5">可麗餅系列</label></li>
-                        <li><input type="checkbox" id="store_lw_6"><label for="store_lw_6">Uchi Café 各式甜點</label></li>
+                        <li><input type="checkbox" id="store_lw_5"><label for="store_lw_5">L-Chiki 炸雞</label></li>
+                        <li><input type="checkbox" id="store_lw_6"><label for="store_lw_6">惡魔飯糰</label></li>
+                        <li><input type="checkbox" id="store_lw_7"><label for="store_lw_7">玉子燒三明治</label></li>
+                        <li><input type="checkbox" id="store_lw_8"><label for="store_lw_8">草莓三明治</label></li>
+                        <li><input type="checkbox" id="store_lw_9"><label for="store_lw_9">水果三明治</label></li>
+                        <li><input type="checkbox" id="store_lw_10"><label for="store_lw_10">Hash Brown 薯餅</label></li>
+                        <li><input type="checkbox" id="store_lw_11"><label for="store_lw_11">日式蛋包飯</label></li>
+                        <li><input type="checkbox" id="store_lw_12"><label for="store_lw_12">天下一品拉麵</label></li>
+                        <li><input type="checkbox" id="store_lw_13"><label for="store_lw_13">半熟蛋烏龍麵</label></li>
+                        <li><input type="checkbox" id="store_lw_14"><label for="store_lw_14">照燒雞肉捲餅</label></li>
+                        <li><input type="checkbox" id="store_lw_15"><label for="store_lw_15">鮭魚飯糰</label></li>
+                        <li><input type="checkbox" id="store_lw_16"><label for="store_lw_16">明太子飯糰</label></li>
+                        <li><input type="checkbox" id="store_lw_17"><label for="store_lw_17">抹茶甜點系列</label></li>
+                        <li><input type="checkbox" id="store_lw_18"><label for="store_lw_18">草莓大福</label></li>
+                        <li><input type="checkbox" id="store_lw_19"><label for="store_lw_19">牛奶布丁</label></li>
+                        <li><input type="checkbox" id="store_lw_20"><label for="store_lw_20">Uchi Café 泡芙系列</label></li>
+                        <li><input type="checkbox" id="store_lw_21"><label for="store_lw_21">超Happy挑戰系列</label></li>
+                        <li><input type="checkbox" id="store_lw_22"><label for="store_lw_22">烘烤糖霜麵包脆餅 (シュガーラスク)</label></li>
                     </ul>
                 </div>
 
@@ -1232,12 +1248,148 @@ body.dark-mode .store-box h4 {
                 <div class="store-box">
                     <h4>## MUJI / 無印良品</h4>
                     <ul class="store-item-list">
-                        <li><input type="checkbox" id="store_mj_1"><label for="store_mj_1">草莓白巧克力</label></li>
-                        <li><input type="checkbox" id="store_mj_2"><label for="store_mj_2">宇治抹茶草莓巧克力</label></li>
-                        <li><input type="checkbox" id="store_mj_3"><label for="store_mj_3">年輪蛋糕系列 (一口尺寸)</label></li>
-                        <li><input type="checkbox" id="store_mj_4"><label for="store_mj_4">即食咖哩調理包</label></li>
-                        <li><input type="checkbox" id="store_mj_5"><label for="store_mj_5">懷舊棉花糖</label></li>
-                        <li><input type="checkbox" id="store_mj_6"><label for="store_mj_6">無印良品旅行保養品</label></li>
+                        <li><input type="checkbox" id="store_mj_1"><label for="store_mj_1">蜂蜜梅子軟糖</label></li>
+                        <li><input type="checkbox" id="store_mj_2"><label for="store_mj_2">酸梅軟糖</label></li>
+                        <li><input type="checkbox" id="store_mj_3"><label for="store_mj_3">梅子顆粒糖</label></li>
+                        <li><input type="checkbox" id="store_mj_4"><label for="store_mj_4">糖衣酸梅軟糖</label></li>
+                        <li><input type="checkbox" id="store_mj_5"><label for="store_mj_5">無糖薄荷糖 (Super-Mint)</label></li>
+                        <li><input type="checkbox" id="store_mj_6"><label for="store_mj_6">黃豆粉球 (Kinako Ball)</label></li>
+                        <li><input type="checkbox" id="store_mj_7"><label for="store_mj_7">瀨戶內檸檬乾</label></li>
+                        <li><input type="checkbox" id="store_mj_8"><label for="store_mj_8">蘋果乾 (Apple Chips)</label></li>
+                        <li><input type="checkbox" id="store_mj_9"><label for="store_mj_9">牛肉牛蒡炊飯調味料</label></li>
+                        <li><input type="checkbox" id="store_mj_10"><label for="store_mj_10">巧克力浸漬蘋果切片</label></li>
+                        <li><input type="checkbox" id="store_mj_11"><label for="store_mj_11">焙茶拿鐵粉 (ほうじ茶ラテ)</label></li>
+                    </ul>
+                </div>
+
+                <!-- Starbucks -->
+                <div class="store-box">
+                    <h4>## Starbucks / 星巴克</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_sb_1"><label for="store_sb_1">焙茶經典紅茶拿鐵</label></li>
+                    </ul>
+                </div>
+
+                <!-- Tully's Coffee -->
+                <div class="store-box">
+                    <h4>## Tully's Coffee</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_ty_1"><label for="store_ty_1">QQ醬油糰子拿鐵 (みたらし団子ラテ)</label></li>
+                    </ul>
+                </div>
+
+                <!-- McDonald's -->
+                <div class="store-box">
+                    <h4>## McDonald's / 麥當勞</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_mc_1"><label for="store_mc_1">湯姆貓與傑利鼠兒童餐玩具</label></li>
+                    </ul>
+                </div>
+
+                <!-- AEON -->
+                <div class="store-box">
+                    <h4>## AEON / 永旺</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_ae_1"><label for="store_ae_1">鹽昆布絲 (塩昆布)</label></li>
+                    </ul>
+                </div>
+
+                <!-- KALDI -->
+                <div class="store-box">
+                    <h4>## KALDI COFFEE FARM</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_kd_1"><label for="store_kd_1">青大蒜辣油</label></li>
+                    </ul>
+                </div>
+
+                <!-- 島本 -->
+                <div class="store-box">
+                    <h4>## 島本（食品專賣）</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_sm_1"><label for="store_sm_1">明太子蛋黃醬 (めんたいマヨネーズ)</label></li>
+                    </ul>
+                </div>
+
+                <!-- ROYCE' -->
+                <div class="store-box">
+                    <h4>## 北海道名產店 / ROYCE' 專賣店</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_ry_1"><label for="store_ry_1">ROYCE' 抹茶巧克力條</label></li>
+                        <li><input type="checkbox" id="store_ry_2"><label for="store_ry_2">ROYCE' 水果巧克力條</label></li>
+                        <li><input type="checkbox" id="store_ry_3"><label for="store_ry_3">ROYCE' 堅果巧克力條</label></li>
+                    </ul>
+                </div>
+
+                <!-- くら寿司 -->
+                <div class="store-box">
+                    <h4>## くら寿司 (Kura Sushi)</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_kura_1"><label for="store_kura_1">洋香瓜聖代 (エメラルドマスカットパフェ)</label></li>
+                    </ul>
+                </div>
+
+                <!-- 咖哩麵包專賣店 -->
+                <div class="store-box">
+                    <h4>## 咖哩麵包專賣店 (カレーパンノヒ)</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_curry_1"><label for="store_curry_1">爪哇咖哩麵包</label></li>
+                        <li><input type="checkbox" id="store_curry_2"><label for="store_curry_2">牛肉角咖哩麵包</label></li>
+                    </ul>
+                </div>
+
+                <!-- 日本連鎖電器量販店 -->
+                <div class="store-box">
+                    <h4>## 日本連鎖電器量販店</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_elec_1"><label for="store_elec_1">Dr.Air 按摩槍 Exagun Pocket</label></li>
+                    </ul>
+                </div>
+
+                <!-- 日本連鎖藥妝店 -->
+                <div class="store-box">
+                    <h4>## 日本連鎖藥妝店</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_ph_1"><label for="store_ph_1">腹部脂肪分解膠囊 (おなかの脂肪ぱっくん)</label></li>
+                        <li><input type="checkbox" id="store_ph_2"><label for="store_ph_2">3倍Pakkun分解酵母 Premium</label></li>
+                        <li><input type="checkbox" id="store_ph_3"><label for="store_ph_3">北見薄荷油噴霧 Hello Kitty版</label></li>
+                    </ul>
+                </div>
+
+                <!-- 日本各大超市與進口超市 -->
+                <div class="store-box">
+                    <h4>## 日本各大超市與進口超市</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_sup_1"><label for="store_sup_1">桃屋奶油蒜片 (フライドにんにく)</label></li>
+                        <li><input type="checkbox" id="store_sup_2"><label for="store_sup_2">桃屋蒜末調醬 (きざみにんにく)</label></li>
+                        <li><input type="checkbox" id="store_sup_3"><label for="store_sup_3"><span style="color:#e74c3c;">博多華味鳥極致香料鹽（主要通路在九州／官方通販，關西實體店較少見）</span></label></li>
+                    </ul>
+                </div>
+
+                <!-- 戶外用品店與特產超市 -->
+                <div class="store-box">
+                    <h4>## 戶外用品店與特產超市</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_out_1"><label for="store_out_1">ほりにし綜合堅果 升級版</label></li>
+                        <li><input type="checkbox" id="store_out_2"><label for="store_out_2">ほりにし綜合堅果</label></li>
+                        <li><input type="checkbox" id="store_out_3"><label for="store_out_3">Horinishi 戶外香料鹽</label></li>
+                        <li><input type="checkbox" id="store_out_4"><label for="store_out_4">Horinishi 黑戶外香料鹽</label></li>
+                        <li><input type="checkbox" id="store_out_5"><label for="store_out_5">Horinishi Premium 戶外香料鹽</label></li>
+                    </ul>
+                </div>
+
+                <!-- 日本各地特產伴手禮店 -->
+                <div class="store-box" style="grid-column: span 1 / -1;">
+                    <h4>## 日本各地特產伴手禮店（多為機場免稅店／限定土產店，部分為外縣市限定）</h4>
+                    <ul class="store-item-list">
+                        <li><input type="checkbox" id="store_gift_1"><label for="store_gift_1">KitKat 櫻花日本酒（限定土產，空港免稅店／楽天・Amazon 較現實）</label></li>
+                        <li><input type="checkbox" id="store_gift_2"><label for="store_gift_2"><span style="color:#e74c3c;">京都辣油香鬆（京都限定，錦市場本店／産寧坂店）</span></label></li>
+                        <li><input type="checkbox" id="store_gift_3"><label for="store_gift_3">KitKat 梅酒（限定土產，空港免稅店）</label></li>
+                        <li><input type="checkbox" id="store_gift_4"><label for="store_gift_4"><span style="color:#e74c3c;">石垣島柚子鹽（沖繩限定，本次關西行程不易購得）</span></label></li>
+                        <li><input type="checkbox" id="store_gift_5"><label for="store_gift_5"><span style="color:#e74c3c;">沖繩柚子醋（沖繩限定，本次關西行程不易購得）</span></label></li>
+                        <li><input type="checkbox" id="store_gift_6"><label for="store_gift_6">川津家柚子胡椒（百貨店／成城石井等精選超市）</label></li>
+                        <li><input type="checkbox" id="store_gift_7"><label for="store_gift_7"><span style="color:#e74c3c;">櫛野農園柚子胡椒（九州限定，本次關西行程不易購得）</span></label></li>
+                        <li><input type="checkbox" id="store_gift_8"><label for="store_gift_8"><span style="color:#e74c3c;">東京限定厚煎蛋高湯（東京限定，官網不販售，關西買不到）</span></label></li>
+                        <li><input type="checkbox" id="store_gift_9"><label for="store_gift_9">KitKat 日本酒（限定土產，空港免稅店）</label></li>
                     </ul>
                 </div>
 
@@ -1245,15 +1397,27 @@ body.dark-mode .store-box h4 {
                 <div class="store-box" style="grid-column: span 1 / -1;">
                     <h4>## 日本各大便利商店與超市 (廣泛販售)</h4>
                     <ul class="store-item-list">
-                        <li><input type="checkbox" id="store_all_1"><label for="store_all_1">Kirin 午後紅茶</label></li>
-                        <li><input type="checkbox" id="store_all_2"><label for="store_all_2">明治美味牛乳 (明治美味しい牛乳)</label></li>
-                        <li><input type="checkbox" id="store_all_3"><label for="store_all_3">Yakult Y1000 (養樂多)</label></li>
-                        <li><input type="checkbox" id="store_all_4"><label for="store_all_4">い・ろ・は・す もも (LOHAS 水蜜桃水)</label></li>
-                        <li><input type="checkbox" id="store_all_5"><label for="store_all_5">MINTIA BREEZE 薄荷糖</label></li>
-                        <li><input type="checkbox" id="store_all_6"><label for="store_all_6">アイスの実 (果實冰球)</label></li>
-                        <li><input type="checkbox" id="store_all_7"><label for="store_all_7">OHAYO 烤布丁 (焼プリン)</label></li>
-                        <li><input type="checkbox" id="store_all_8"><label for="store_all_8">日清兵衛油豆腐烏龍麵 (Donbei)</label></li>
-                        <li><input type="checkbox" id="store_all_9"><label for="store_all_9">Pino 巧克力冰磚</label></li>
+                        <li><input type="checkbox" id="store_all_1"><label for="store_all_1"><span style="color:#e74c3c;">PARM 焦糖布丁雪糕（2025年10月期間限定商品，已於2026年3月停產，行程期間恐已買不到）</span></label></li>
+                        <li><input type="checkbox" id="store_all_2"><label for="store_all_2">澤西牛乳布丁 (ジャージー牛乳プリン)</label></li>
+                        <li><input type="checkbox" id="store_all_3"><label for="store_all_3"><span style="color:#e74c3c;">大粒葡萄蘆薈優格（季節限定，通常8月下旬才發售，7月行程期間可能尚未上市）</span></label></li>
+                        <li><input type="checkbox" id="store_all_4"><label for="store_all_4">ほろよい調酒濃縮汁 洋梨＆蘋果</label></li>
+                        <li><input type="checkbox" id="store_all_5"><label for="store_all_5">ほろよい調酒濃縮汁 荔枝＆白葡萄</label></li>
+                        <li><input type="checkbox" id="store_all_6"><label for="store_all_6">Kirin 午後紅茶</label></li>
+                        <li><input type="checkbox" id="store_all_7"><label for="store_all_7">Pokka Sapporo 檸檬飲 (MUKUMI)</label></li>
+                        <li><input type="checkbox" id="store_all_8"><label for="store_all_8">明治美味牛乳 (明治美味しい牛乳)</label></li>
+                        <li><input type="checkbox" id="store_all_9"><label for="store_all_9">Yakult Y1000 (養樂多)</label></li>
+                        <li><input type="checkbox" id="store_all_10"><label for="store_all_10">Yakult Y1000 低卡低糖版</label></li>
+                        <li><input type="checkbox" id="store_all_11"><label for="store_all_11">い・ろ・は・す もも (LOHAS 水蜜桃水，2026年3月新包裝重新上市)</label></li>
+                        <li><input type="checkbox" id="store_all_12"><label for="store_all_12">OHAYO BRULEE (焦糖烤布蕾冰淇淋)</label></li>
+                        <li><input type="checkbox" id="store_all_13"><label for="store_all_13"><span style="color:#e74c3c;">伊右衛門 柚子茶（實體店已難找到，主要靠楽天・Amazon 網購）</span></label></li>
+                        <li><input type="checkbox" id="store_all_14"><label for="store_all_14">KEWPIE 蒜香吐司抹醬</label></li>
+                        <li><input type="checkbox" id="store_all_15"><label for="store_all_15">KEWPIE 糖霜奶油吐司抹醬</label></li>
+                        <li><input type="checkbox" id="store_all_16"><label for="store_all_16">Mizkan 丸搾柚子醋</label></li>
+                        <li><input type="checkbox" id="store_all_17"><label for="store_all_17">くらこん 鹽昆布</label></li>
+                        <li><input type="checkbox" id="store_all_18"><label for="store_all_18"><span style="color:#e74c3c;">Glico Pocky 東京甘酒巧克力棒（首都圈限定，關西一般超商買不到）</span></label></li>
+                        <li><input type="checkbox" id="store_all_19"><label for="store_all_19">高千穗牧場 咖啡歐蕾</label></li>
+                        <li><input type="checkbox" id="store_all_20"><label for="store_all_20">MINTIA BREEZE 鮮葡萄薄荷糖</label></li>
+                        <li><input type="checkbox" id="store_all_21"><label for="store_all_21">江崎グリコ 果實冰球 雙口味葡萄</label></li>
                     </ul>
                 </div>
             </div>
